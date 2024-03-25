@@ -1,3 +1,11 @@
+<b>This is a fork of <a href="https://github.com/roboception/rcdiscover">rcdiscover</a> at commit ec316a8a32ae8bdf38ac2c1af7c7693ea5a0fadd.</b>
+
+Changes:
+- Updated company labels and icons to reflect SCHUNK.
+- Clicking on a device now opens the Smart Grasping frontend instead of the default Roboception frontend.
+
+Below is the original readme:
+
 Discovery of roboception sensors
 ================================
 
