@@ -1,6 +1,11 @@
-FROM python:3.9-bullseye
+ARG START_IMAGE="python:3.10.7-slim"
+#==================================================================================================
+
+FROM ${START_IMAGE} AS base
+
 
 # Update package lists and install required dependencies
+#==================================================================================================
 RUN apt-get update && \
     apt-get install -y \
     software-properties-common && \
@@ -22,27 +27,35 @@ RUN apt-get update && \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Copy the rcdiscover source code into the container
+#==================================================================================================
 COPY . /rcdiscover
 
 # Set the working directory
+#==================================================================================================
 WORKDIR /rcdiscover
 
 # Create the build directory
+#==================================================================================================
 RUN mkdir build
 
 # Perform an out-of-source build
+#==================================================================================================
 RUN cd build && \
     cmake .. && \
     make
 
 # Expose any necessary ports if applicable
+#==================================================================================================
 RUN cd build && \
   cmake -DBUILD_RCDISCOVER_GUI=ON .. && make install
 
-# Set the entry point or command to execute the application every 30 seconds
+# Set the entry point or command to execute the application on start
+#==================================================================================================
 WORKDIR /rcdiscover/build/tools
 RUN chmod +x rcdiscover-gui
 ENTRYPOINT ["/bin/bash", "-c" ,"./rcdiscover-gui"] 
+
 # if not required to run the application on start, use the following command
+#==================================================================================================
 # ENTRYPOINT ["/bin/bash"]
 # CMD [ "./rcdiscover-gui" ]
