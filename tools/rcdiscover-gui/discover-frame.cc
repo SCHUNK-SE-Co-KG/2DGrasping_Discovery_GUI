@@ -104,7 +104,7 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
   force_ip_dialog_(nullptr),
   about_dialog_(nullptr),
   menu_event_item_(nullptr),
-  only_rc_sensors_(true),
+  only_rc_sensors_(false),
   filter_text_()
 {
   // spinner
@@ -147,16 +147,16 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
 
     int w, h;
     discover_button_->GetSize(&w, &h);
-    auto *only_rc_cbox = new wxCheckBox(panel, ID_OnlyRcCheckbox,
-                                        "Only rc_... devices",
-                                        wxDefaultPosition, wxSize(-1, h));
-    only_rc_cbox->SetValue(only_rc_sensors_);
-    button_box->Add(only_rc_cbox, 1);
+    // auto *only_rc_cbox = new wxCheckBox(panel, ID_OnlyRcCheckbox,
+    //                                     "Only rc_... devices",
+    //                                     wxDefaultPosition, wxSize(-1, h));
+    // only_rc_cbox->SetValue(only_rc_sensors_);
+    // button_box->Add(only_rc_cbox, 1);
 
-    button_box->AddSpacer(10);
-    button_box->Add(new wxStaticLine(panel, wxID_ANY, wxDefaultPosition,
-                    wxSize(-1,30), wxLI_VERTICAL));
-    button_box->AddSpacer(10);
+    // button_box->AddSpacer(10);
+    // button_box->Add(new wxStaticLine(panel, wxID_ANY, wxDefaultPosition,
+    //                 wxSize(-1,30), wxLI_VERTICAL));
+    // button_box->AddSpacer(10);
 
     auto *filter_text = new wxStaticText(panel, wxID_ANY, "Filter");
     button_box->Add(filter_text, 1, wxTOP, 6);
@@ -226,7 +226,7 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
 
   {
     auto *button_box = new wxBoxSizer(wxHORIZONTAL);
-    reset_button_ = new wxButton(panel, ID_ResetButton, "Reset rc_visard");
+    reset_button_ = new wxButton(panel, ID_ResetButton, "Reset visard");
     button_box->Add(reset_button_, 1);
     int w, h;
     reset_button_->GetSize(&w, &h);
