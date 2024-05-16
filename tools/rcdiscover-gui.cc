@@ -73,7 +73,7 @@ class RcDiscoverApp : public wxApp
 
       registerResources();
 
-      frame_ = new DiscoverFrame("rcdiscover", wxPoint(50,50));
+      frame_ = new DiscoverFrame("SCHUNK DISCOVERY TOOL", wxPoint(50,50));
       frame_->Show(true);
       return true;
     }
