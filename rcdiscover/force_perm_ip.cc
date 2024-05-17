@@ -32,8 +32,8 @@ void ForcePermIP::sendCommand(const uint64_t mac, const uint32_t ip,
   std::vector<std::uint8_t> force_perm_ip_command(64);
   force_perm_ip_command[0] = 0x42;
   force_perm_ip_command[1] = 0x00;   // flags
-  force_perm_ip_command[2] = 0x00;   // command: FORCEPERMIP_CMD: 0x0009
-  force_perm_ip_command[3] = 0x09;   // command: FORCEPERMIP_CMD: 0x0009
+  force_perm_ip_command[2] = 0x00;   // command: FORCEPERMIP_CMD: 0x0006
+  force_perm_ip_command[3] = 0x06;   // command: FORCEPERMIP_CMD: 0x0006
   force_perm_ip_command[4] = 0x00;   // length
   force_perm_ip_command[5] = 64 - 8; // length
 
