@@ -43,6 +43,7 @@ set(rcdiscover_src
         deviceinfo.cc
         discover.cc
         force_ip.cc
+        force_perm_ip.cc
         operation_not_permitted.cc
         wol_exception.cc
         socket_exception.cc
@@ -54,6 +55,7 @@ set(rcdiscover_hh
         deviceinfo.h
         discover.h
         force_ip.h
+        force_perm_ip.h
         operation_not_permitted.h
         wol_exception.h
         socket_exception.h
