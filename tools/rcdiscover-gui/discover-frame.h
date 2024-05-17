@@ -50,6 +50,7 @@ class wxHtmlHelpController;
 
 class ResetDialog;
 class ForceIpDialog;
+class ForcePermIpDialog;
 class ReconnectDialog;
 class AboutDialog;
 
@@ -128,6 +129,11 @@ class DiscoverFrame : public wxFrame
     /**
      * @brief Event handler for Reconnect button click.
      */
+    void onForcePermIpButton(wxCommandEvent &);
+
+    /**
+     * @brief Event handler for Reconnect button click.
+     */
     void onReconnectButton(wxCommandEvent &);
 
     /**
@@ -169,6 +175,11 @@ class DiscoverFrame : public wxFrame
     void onForceIpContextMenu(wxMenuEvent &);
 
     /**
+     * @brief Event handler for "force permanent ip" context menu item.
+     */
+    void onForcePermIpContextMenu(wxMenuEvent &);
+
+    /**
      * @brief Event handler for "reconnect" context menu item.
      */
     void onReconnectContextMenu(wxMenuEvent &);
@@ -199,6 +210,13 @@ class DiscoverFrame : public wxFrame
      * @param row row of currently selected device in the table
      */
     void openForceIpDialog(int row);
+
+    /**
+     * @brief Open Force Perm IP dialog.
+     * @param row row of currently selected device in the table
+     */
+    void openForcePermIpDialog(int row);
+
 
     /**
      * @brief Open Reconnect dialog.
@@ -237,9 +255,11 @@ class DiscoverFrame : public wxFrame
     wxTextCtrl *filter_input_;
     wxButton *reset_button_;
     wxButton *force_ip_button_;
+    wxButton *force_perm_ip_button_;
     wxButton *reconnect_button_;
     ResetDialog *reset_dialog_;
     ForceIpDialog *force_ip_dialog_;
+    ForcePermIpDialog *force_perm_ip_dialog_;
     ReconnectDialog *reconnect_dialog_;
     AboutDialog *about_dialog_;
     wxAnimation spinner_;
