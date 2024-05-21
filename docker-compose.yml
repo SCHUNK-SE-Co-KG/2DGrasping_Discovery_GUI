@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  rcdiscover:
+    build:
+      context: .
+      dockerfile: Dockerfile.GUI
+    image: rcdiscover
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    container_name: rcdiscover
+    environment:
+      - DISPLAY=$DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    stdin_open: true
+    tty: true
+    command: ["/bin/bash", "-c" ,"./build/tools/rcdiscover-gui"]
+   

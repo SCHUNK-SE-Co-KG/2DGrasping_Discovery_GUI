@@ -75,6 +75,7 @@ if(BUILD_RCDISCOVER_GUI)
     rcdiscover-gui/sensor-command-dialog.cc
     rcdiscover-gui/reset-dialog.cc
     rcdiscover-gui/force-ip-dialog.cc
+    rcdiscover-gui/force-perm-ip-dialog.cc
     rcdiscover-gui/reconnect-dialog.cc
     rcdiscover-gui/about-dialog.cc
     rcdiscover-gui/resources.cc)

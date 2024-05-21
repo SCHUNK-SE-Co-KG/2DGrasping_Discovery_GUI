@@ -43,6 +43,7 @@
 #include "event-ids.h"
 #include "reset-dialog.h"
 #include "force-ip-dialog.h"
+#include "force-perm-ip-dialog.h"
 #include "reconnect-dialog.h"
 #include "about-dialog.h"
 #include "resources.h"
@@ -100,11 +101,13 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
   filter_input_(nullptr),
   reset_button_(nullptr),
   force_ip_button_(nullptr),
+  force_perm_ip_button_(nullptr),
   reset_dialog_(nullptr),
   force_ip_dialog_(nullptr),
+  force_perm_ip_dialog_(nullptr),
   about_dialog_(nullptr),
   menu_event_item_(nullptr),
-  only_rc_sensors_(true),
+  only_rc_sensors_(false),
   filter_text_()
 {
   // spinner
@@ -147,16 +150,16 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
 
     int w, h;
     discover_button_->GetSize(&w, &h);
-    auto *only_rc_cbox = new wxCheckBox(panel, ID_OnlyRcCheckbox,
-                                        "Only rc_... devices",
-                                        wxDefaultPosition, wxSize(-1, h));
-    only_rc_cbox->SetValue(only_rc_sensors_);
-    button_box->Add(only_rc_cbox, 1);
+    // auto *only_rc_cbox = new wxCheckBox(panel, ID_OnlyRcCheckbox,
+    //                                     "Only rc_... devices",
+    //                                     wxDefaultPosition, wxSize(-1, h));
+    // only_rc_cbox->SetValue(only_rc_sensors_);
+    // button_box->Add(only_rc_cbox, 1);
 
-    button_box->AddSpacer(10);
-    button_box->Add(new wxStaticLine(panel, wxID_ANY, wxDefaultPosition,
-                    wxSize(-1,30), wxLI_VERTICAL));
-    button_box->AddSpacer(10);
+    // button_box->AddSpacer(10);
+    // button_box->Add(new wxStaticLine(panel, wxID_ANY, wxDefaultPosition,
+    //                 wxSize(-1,30), wxLI_VERTICAL));
+    // button_box->AddSpacer(10);
 
     auto *filter_text = new wxStaticText(panel, wxID_ANY, "Filter");
     button_box->Add(filter_text, 1, wxTOP, 6);
@@ -226,7 +229,7 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
 
   {
     auto *button_box = new wxBoxSizer(wxHORIZONTAL);
-    reset_button_ = new wxButton(panel, ID_ResetButton, "Reset rc_visard");
+    reset_button_ = new wxButton(panel, ID_ResetButton, "Reset visard");
     button_box->Add(reset_button_, 1);
     int w, h;
     reset_button_->GetSize(&w, &h);
@@ -234,6 +237,10 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
     force_ip_button_ = new wxButton(panel, ID_ForceIpButton,
                                     "Set temporary IP address");
     button_box->Add(force_ip_button_, 1);
+
+    force_perm_ip_button_ = new wxButton(panel, ID_ForcePermIpButton,
+                                    "Set permanent IP address");
+    button_box->Add(force_perm_ip_button_, 1);
 
     reconnect_button_ = new wxButton(panel, ID_ReconnectButton,
                                     "Reconnect device");
@@ -269,6 +276,9 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
   Connect(ID_ForceIpButton,
           wxEVT_COMMAND_BUTTON_CLICKED,
           wxCommandEventHandler(DiscoverFrame::onForceIpButton));
+  Connect(ID_ForcePermIpButton,
+          wxEVT_COMMAND_BUTTON_CLICKED,
+          wxCommandEventHandler(DiscoverFrame::onForcePermIpButton));
   Connect(ID_ReconnectButton,
           wxEVT_COMMAND_BUTTON_CLICKED,
           wxCommandEventHandler(DiscoverFrame::onReconnectButton));
@@ -311,6 +321,9 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
   Connect(ID_ForceIpButton,
           wxEVT_MENU,
           wxMenuEventHandler(DiscoverFrame::onForceIpContextMenu));
+  Connect(ID_ForcePermIpButton,
+          wxEVT_MENU,
+          wxMenuEventHandler(DiscoverFrame::onForcePermIpContextMenu));
   Connect(ID_ReconnectButton,
           wxEVT_MENU,
           wxMenuEventHandler(DiscoverFrame::onReconnectContextMenu));
@@ -332,6 +345,7 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
 
   reset_dialog_ = new ResetDialog(help_ctrl_, panel, wxID_ANY);
   force_ip_dialog_ = new ForceIpDialog(help_ctrl_, panel, wxID_ANY);
+  force_perm_ip_dialog_ = new ForcePermIpDialog(help_ctrl_, panel, wxID_ANY);
   reconnect_dialog_ = new ReconnectDialog(help_ctrl_, panel, wxID_ANY);
   about_dialog_ = new AboutDialog(panel, wxID_ANY);
 
@@ -347,6 +361,7 @@ void DiscoverFrame::setBusy()
   discover_button_->Disable();
   reset_button_->Disable();
   force_ip_button_->Disable();
+  force_perm_ip_button_->Disable();
   reconnect_button_->Disable();
   spinner_ctrl_->Play();
 }
@@ -356,6 +371,7 @@ void DiscoverFrame::clearBusy()
   discover_button_->Enable();
   reset_button_->Enable();
   force_ip_button_->Enable();
+  force_perm_ip_button_->Enable();
   reconnect_button_->Enable();
   spinner_ctrl_->Stop();
 
@@ -422,6 +438,7 @@ void DiscoverFrame::updateDeviceList(const std::vector<wxVector<wxVariant>> &d)
 
   reset_dialog_->setDiscoveredSensors(device_list_->GetStore(), show_in_reset_dialog);
   force_ip_dialog_->setDiscoveredSensors(device_list_->GetStore());
+  force_perm_ip_dialog_->setDiscoveredSensors(device_list_->GetStore());
   reconnect_dialog_->setDiscoveredSensors(device_list_->GetStore());
 }
 
@@ -442,6 +459,11 @@ void DiscoverFrame::onResetButton(wxCommandEvent &)
 void DiscoverFrame::onForceIpButton(wxCommandEvent &)
 {
   openForceIpDialog(device_list_->GetSelectedRow());
+}
+
+void DiscoverFrame::onForcePermIpButton(wxCommandEvent &)
+{
+  openForcePermIpDialog(device_list_->GetSelectedRow());
 }
 
 void DiscoverFrame::onReconnectButton(wxCommandEvent &)
@@ -512,6 +534,7 @@ void DiscoverFrame::onDataViewContextMenu(wxDataViewEvent &event)
 
   menu.Append(ID_ForceIpButton, "Set temporary IP");
   menu.Append(ID_ReconnectButton, "Reconnect");
+  menu.Append(ID_ForcePermIpButton, "Set permanent IP");
 
   PopupMenu(&menu);
 }
@@ -592,6 +615,17 @@ void DiscoverFrame::onForceIpContextMenu(wxMenuEvent &)
   openForceIpDialog(menu_event_item_->first);
 }
 
+void DiscoverFrame::onForcePermIpContextMenu(wxMenuEvent &)
+{
+  if (!menu_event_item_ ||
+      menu_event_item_->first < 0)
+  {
+    return;
+  }
+
+  openForcePermIpDialog(menu_event_item_->first);
+}
+
 void DiscoverFrame::onReconnectContextMenu(wxMenuEvent &)
 {
   if (!menu_event_item_ ||
@@ -657,6 +691,17 @@ void DiscoverFrame::openForceIpDialog(const int row)
 
   force_ip_dialog_->Show();
 }
+
+void DiscoverFrame::openForcePermIpDialog(const int row)
+{
+  if (row != wxNOT_FOUND)
+  {
+    force_perm_ip_dialog_->setActiveSensor(static_cast<unsigned int>(row));
+  }
+
+  force_perm_ip_dialog_->Show();
+}
+
 
 void DiscoverFrame::openReconnectDialog(const int row)
 {
