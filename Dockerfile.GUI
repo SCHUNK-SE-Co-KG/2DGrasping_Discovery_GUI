@@ -47,7 +47,7 @@ RUN cd build && \
 # Expose any necessary ports if applicable
 #==================================================================================================
 RUN cd build && \
-  cmake -DBUILD_RCDISCOVER_GUI=ON .. && make install
+  cmake -DBUILD_RCDISCOVER_GUI=ON .. && cmake -DCMAKE_INSTALL_PREFIX="/usr" .. && make install
 
 # Set the entry point or command to execute the application on start
 #==================================================================================================
