@@ -70,17 +70,19 @@
 
 #include "resources/logo_128.xpm"
 #include "resources/logo_32_rotate.h"
+#include <wx/utils.h>
+#include <wx/wx.h>
 
 static bool isMadeByRc(const wxVector<wxVariant> &device)
 {
-  return device[DiscoverFrame::MANUFACTURER].GetString() == ROBOCEPTION ||
-    device[DiscoverFrame::MODEL].GetString().StartsWith("rc_");
+  return device[DiscoverFrame::MANUFACTURER].GetString() == SCHUNK ||
+    device[DiscoverFrame::MODEL].GetString().StartsWith("2D");
 }
 
 static bool isMadeByRc(const wxDataViewListCtrl &device_list, unsigned int row)
 {
-  return device_list.GetTextValue(row, DiscoverFrame::MANUFACTURER) == ROBOCEPTION ||
-    device_list.GetTextValue(row, DiscoverFrame::MODEL).StartsWith("rc_");
+  return device_list.GetTextValue(row, DiscoverFrame::MANUFACTURER) == SCHUNK ||
+    device_list.GetTextValue(row, DiscoverFrame::MODEL).StartsWith("2D");
 }
 
 static bool isRcVisard(const wxVector<wxVariant> &device)
