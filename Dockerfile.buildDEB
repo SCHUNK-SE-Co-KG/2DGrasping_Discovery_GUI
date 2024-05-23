@@ -35,6 +35,7 @@ RUN apt-get update && \
     apt-get install -y \
     libcanberra-gtk3-module \
     file \
+    curl \
     && apt-get clean
 
 
