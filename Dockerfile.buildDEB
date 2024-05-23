@@ -68,26 +68,27 @@ RUN cd build && \
     make && \
     make package
 
-# # upload debian package to Nexus
-# # ================================
-# ARG USER
-# ARG PW
-# ARG REGISTRY_URL=nexus.cloud.schunk.com
-# ARG FILE_REPO=tf-files
+# upload debian package to Nexus
+# ================================
+ARG USER
+ARG PW
+ARG REGISTRY_URL=nexus.cloud.schunk.com
+ARG FILE_REPO=tf-files/rcdiscover
 
-# # Upload Debian package to Nexus using curl
-# RUN curl -v -u $USER:$PW --upload-file /rcdiscover/build/_CPack_Packages/Linux/DEB/rcdiscover-gui*.deb https://$REGISTRY_URL/repository/$FILE_REPO/
+# Upload Debian package to Nexus using curl
+RUN curl -v -u $USER:$PW --upload-file /rcdiscover/build/_CPack_Packages/Linux/DEB/rcdiscover-gui*.deb https://$REGISTRY_URL/repository/$FILE_REPO/
+# _CPack_Packages/Linux/DEB/
 
-# # Test Nexus upload
-# # ==============================================
-# # Download Debian package from Nexus using curl
-# RUN curl -v -u $NEXUS_USERNAME:$NEXUS_PASSWORD -o /rcdiscover.deb https://$REGISTRY_URL/repository/$FILE_REPO/rcdiscover-gui*.deb
+# Test Nexus upload
+# ==============================================
+# Download Debian package from Nexus using curl
+RUN curl -v -u $USER:$PW -o /rcdiscover.deb https://$REGISTRY_URL/repository/$FILE_REPO/rcdiscover-gui*.deb
 
-# # Install the downloaded Debian package
-# RUN dpkg -i /rcdiscover-gui*.deb
+# Install the downloaded Debian package
+RUN dpkg -i /rcdiscover-gui*.deb
 
-# # Clean up
-# RUN rm /rcdiscover-gui*.deb
+# Clean up
+RUN rm /rcdiscover-gui*.deb
 
 
 
