@@ -4,6 +4,7 @@ ARG START_IMAGE="python:3.10.7-slim"
 FROM ${START_IMAGE} AS base
 
 
+
 # Update package lists and install required dependencies
 #==================================================================================================
 RUN apt-get update && \
@@ -24,7 +25,17 @@ RUN apt-get update && \
     libhdf5-dev \
     hdf5-tools \
     libfftw3-dev \
+    iputils-ping \
+    dbus \
+    firefox-esr \
+    dpkg-dev \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && \
+    apt-get install -y \
+    libcanberra-gtk3-module \
+    file \
+    && apt-get clean
 
 # Copy the rcdiscover source code into the container
 #==================================================================================================
@@ -47,7 +58,13 @@ RUN cd build && \
 # Expose any necessary ports if applicable
 #==================================================================================================
 RUN cd build && \
-  cmake -DBUILD_RCDISCOVER_GUI=ON .. && cmake -DCMAKE_INSTALL_PREFIX="/usr" .. && make install
+  cmake -DBUILD_RCDISCOVER_GUI=ON .. && cmake -DCMAKE_INSTALL_PREFIX="/usr" .. && make install 
+
+# Start the D-Bus service
+RUN dbus-uuidgen > /var/lib/dbus/machine-id
+
+# Set environment variable to disable accessibility bus
+ENV NO_AT_BRIDGE=1
 
 # Set the entry point or command to execute the application on start
 #==================================================================================================
@@ -59,3 +76,4 @@ ENTRYPOINT ["/bin/bash", "-c" ,"./rcdiscover-gui"]
 #==================================================================================================
 # ENTRYPOINT ["/bin/bash"]
 # CMD [ "./rcdiscover-gui" ]
+
