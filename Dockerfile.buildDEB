@@ -86,8 +86,8 @@ RUN curl -v -u $USER:$PW --upload-file /rcdiscover/build/_CPack_Packages/Linux/D
 # Download Debian package from Nexus using curl
 RUN wget --quiet --user=$USER --password=$PW -O /rcdiscover.deb https://$REGISTRY_URL/repository/$FILE_REPO/rcdiscover-gui.deb
 
-# Install the downloaded Debian package
-RUN dpkg -i /rcdiscover.deb
+# Install the downloaded Debian package with automatic fixes
+RUN dpkg -i /rcdiscover.deb || apt-get install -f -y
 
 # Clean up
 RUN rm /rcdiscover.deb
