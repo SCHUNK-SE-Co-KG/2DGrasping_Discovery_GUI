@@ -36,6 +36,7 @@ RUN apt-get update && \
     libcanberra-gtk3-module \
     file \
     curl \
+    wget \
     && apt-get clean
 
 
@@ -83,13 +84,13 @@ RUN curl -v -u $USER:$PW --upload-file /rcdiscover/build/_CPack_Packages/Linux/D
 # Test Nexus upload
 # ==============================================
 # Download Debian package from Nexus using curl
-RUN curl -v -u $USER:$PW -o /rcdiscover-gui.deb https://$REGISTRY_URL/repository/$FILE_REPO/rcdiscover-gui.deb
+RUN wget -user=$USER --password=$PW -o /rcdiscover.deb https://$REGISTRY_URL/repository/$FILE_REPO/rcdiscover-gui.deb
 
 # Install the downloaded Debian package
-RUN dpkg -i /rcdiscover-gui.deb
+RUN dpkg -i /rcdiscover.deb
 
 # Clean up
-RUN rm /rcdiscover-gui*.deb
+RUN rm /rcdiscover.deb
 
 
 
