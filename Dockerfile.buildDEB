@@ -106,13 +106,13 @@ RUN wget --quiet --user=$USER --password=$PW -O - "https://$REGISTRY_URL/reposit
     done
 
 # List the downloaded files for verification
-RUN ls -l /rcdiscover*.deb
+RUN ls -l rcdiscover*.deb
 
 # Install Debian packages and handle missing dependencies
-RUN dpkg -i /rcdiscover*.deb || apt-get install -f -y
+RUN dpkg -i rcdiscover*.deb || apt-get install -f -y
 
 # Clean up the .deb files
-RUN rm /rcdiscover*.deb
+RUN rm rcdiscover*.deb
 
 
 
