@@ -97,22 +97,25 @@ RUN cd build && \
 # Download Debian package from Nexus using curl
 # RUN wget --quiet --user=$USER --password=$PW -O /rcdiscover.deb https://$REGISTRY_URL/repository/$FILE_REPO/rcdiscover*.deb
 
-# Download Debian packages from Nexus using wget
-RUN wget --quiet --user=$USER --password=$PW -O - "https://$REGISTRY_URL/repository/$FILE_REPO/" | \
-    grep -oP '(?<=href=")[^"]*rcdiscover[^"]*\.deb' | \
-    while read -r file; do \
-        echo "Downloading https://$REGISTRY_URL/repository/$FILE_REPO/$file"; \
-        wget --quiet --user=$USER --password=$PW -O "/$file" "https://$REGISTRY_URL/repository/$FILE_REPO/$file"; \
-    done
+# # Download Debian packages from Nexus using wget
+# RUN wget --quiet --user=$USER --password=$PW -O - "https://$REGISTRY_URL/repository/$FILE_REPO/" | \
+#     grep -oP '(?<=href=")[^"]*rcdiscover[^"]*\.deb' | \
+#     while read -r file; do \
+#         echo "Downloading https://$REGISTRY_URL/repository/$FILE_REPO/$file"; \
+#         wget --quiet --user=$USER --password=$PW -O "/$file" "https://$REGISTRY_URL/repository/$FILE_REPO/$file"; \
+#     done
+
+# Download all files from the specified folder in the Nexus repository using wget
+RUN wget --quiet --recursive --no-parent --user=$USER --password=$PW --cut-dirs=3 -nH "https://$REGISTRY_URL/repository/$FILE_REPO/"
 
 # List the downloaded files for verification
-RUN ls -l rcdiscover*.deb
+RUN ls -l rcdiscover
 
 # Install Debian packages and handle missing dependencies
-RUN dpkg -i rcdiscover*.deb || apt-get install -f -y
+RUN dpkg -i rcdiscover/rcdiscover*.deb || apt-get install -f -y
 
 # Clean up the .deb files
-RUN rm rcdiscover*.deb
+RUN rm rcdiscover/rcdiscover*.deb
 
 
 
