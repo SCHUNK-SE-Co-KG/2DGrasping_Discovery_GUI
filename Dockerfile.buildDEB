@@ -39,6 +39,7 @@ RUN apt-get update && \
     wget \
     zip \
     unzip \
+    procps \
     && apt-get clean
 
 
@@ -96,6 +97,12 @@ RUN wget --quiet --user=$USER --password=$PW -O discovery.zip https://$REGISTRY_
 # Unzip the downloaded file
 # =======================================
 RUN unzip discovery.zip -d /downloaded
+
+# Set sysctl parameters
+# =======================================
+USER root
+RUN sysctl -w net.ipv4.conf.all.rp_filter=0 && \
+    sysctl -w net.ipv4.conf.default.rp_filter=0
 
 # Install Debian packages and handle missing dependencies
 # =======================================
