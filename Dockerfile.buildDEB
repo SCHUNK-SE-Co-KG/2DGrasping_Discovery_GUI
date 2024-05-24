@@ -84,8 +84,8 @@ ARG PW
 ARG REGISTRY_URL=nexus.cloud.schunk.com
 ARG FILE_REPO=tf-files/rcdiscover
 
-RUN cd build && \
-    curl -v -u $USER:$PW --upload-file ../../../../discovery.zip https://$REGISTRY_URL/repository/$FILE_REPO/discovery.zip
+RUN cd build/_CPack_Packages/Linux/DEB && \
+    curl -v -u $USER:$PW --upload-file discovery.zip https://$REGISTRY_URL/repository/$FILE_REPO/discovery.zip
 
 # Download zip file from Nexus using wget
 # =======================================
