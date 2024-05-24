@@ -37,6 +37,8 @@ RUN apt-get update && \
     file \
     curl \
     wget \
+    zip \
+    unzip \
     && apt-get clean
 
 
@@ -70,18 +72,43 @@ RUN cd build && \
     make && \
     make package
 
-# upload debian package to Nexus
+# Create a zip file containing the Debian packages
+# ================================================
+RUN cd build/_CPack_Packages/Linux/DEB && \
+    zip ../../../../discovery.zip rcdiscover*.deb
+
+# Upload zip file to Nexus using curl
 # ================================
 ARG USER
 ARG PW
 ARG REGISTRY_URL=nexus.cloud.schunk.com
 ARG FILE_REPO=tf-files/rcdiscover
 
-# Upload Debian packages to Nexus using curl
 RUN cd build && \
-    for debfile in /rcdiscover/build/_CPack_Packages/Linux/DEB/rcdiscover*.deb; do \
-        curl -v -u $USER:$PW --upload-file $debfile https://$REGISTRY_URL/repository/$FILE_REPO/; \
-    done
+    curl -v -u $USER:$PW --upload-file ../../../../discovery.zip https://$REGISTRY_URL/repository/$FILE_REPO/discovery.zip
+
+# Download zip file from Nexus using wget
+# =======================================
+WORKDIR /downloaded
+
+RUN wget --quiet --user=$USER --password=$PW -O discovery.zip https://$REGISTRY_URL/repository/$FILE_REPO/discovery.zip
+
+# Unzip the downloaded file
+# =======================================
+RUN unzip discovery.zip -d /downloaded
+
+# Install Debian packages and handle missing dependencies
+# =======================================
+RUN dpkg -i /downloaded/rcdiscover*.deb || apt-get install -f -y
+
+# Clean up the .deb files and zip file
+# =======================================
+RUN rm /downloaded/rcdiscover*.deb discovery.zip
+
+# RUN cd build && \
+#     for debfile in /rcdiscover/build/_CPack_Packages/Linux/DEB/rcdiscover*.deb; do \
+#         curl -v -u $USER:$PW --upload-file $debfile https://$REGISTRY_URL/repository/$FILE_REPO/; \
+#     done
 
 # Upload Debian package to Nexus using curl
 # RUN curl -v -u $USER:$PW --upload-file /rcdiscover/build/_CPack_Packages/Linux/DEB/rcdiscover*.deb https://$REGISTRY_URL/repository/$FILE_REPO/
@@ -106,16 +133,16 @@ RUN cd build && \
 #     done
 
 # Download all files from the specified folder in the Nexus repository using wget
-RUN wget --quiet --recursive --no-parent --user=$USER --password=$PW --cut-dirs=3 -nH "https://$REGISTRY_URL/repository/$FILE_REPO/"
+# RUN wget --quiet --recursive --no-parent --user=$USER --password=$PW --cut-dirs=3 -nH "https://$REGISTRY_URL/repository/$FILE_REPO/"
 
 # List the downloaded files for verification
-RUN ls -l rcdiscover
+# RUN ls -l rcdiscover
 
 # Install Debian packages and handle missing dependencies
-RUN dpkg -i rcdiscover/rcdiscover*.deb || apt-get install -f -y
+#RUN dpkg -i rcdiscover/rcdiscover*.deb || apt-get install -f -y
 
 # Clean up the .deb files
-RUN rm rcdiscover/rcdiscover*.deb
+#RUN rm rcdiscover/rcdiscover*.deb
 
 
 
