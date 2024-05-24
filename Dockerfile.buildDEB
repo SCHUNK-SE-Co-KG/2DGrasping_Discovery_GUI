@@ -98,58 +98,9 @@ RUN wget --quiet --user=$USER --password=$PW -O discovery.zip https://$REGISTRY_
 # =======================================
 RUN unzip discovery.zip -d /downloaded
 
-# Set sysctl parameters
-# =======================================
-USER root
-RUN sysctl -w net.ipv4.conf.all.rp_filter=0 && \
-    sysctl -w net.ipv4.conf.default.rp_filter=0
-
-# Install Debian packages and handle missing dependencies
-# =======================================
-RUN dpkg -i /downloaded/rcdiscover*.deb || apt-get install -f -y
-
 # Clean up the .deb files and zip file
 # =======================================
 RUN rm /downloaded/rcdiscover*.deb discovery.zip
-
-# RUN cd build && \
-#     for debfile in /rcdiscover/build/_CPack_Packages/Linux/DEB/rcdiscover*.deb; do \
-#         curl -v -u $USER:$PW --upload-file $debfile https://$REGISTRY_URL/repository/$FILE_REPO/; \
-#     done
-
-# Upload Debian package to Nexus using curl
-# RUN curl -v -u $USER:$PW --upload-file /rcdiscover/build/_CPack_Packages/Linux/DEB/rcdiscover*.deb https://$REGISTRY_URL/repository/$FILE_REPO/
-# _CPack_Packages/Linux/DEB/
-
-# Test Nexus upload
-# ==============================================
-
-# # Download Debian packages from Nexus using wget
-# RUN for file in $(wget --quiet --user=$USER --password=$PW -O - "https://$REGISTRY_URL/repository/$FILE_REPO/" | grep -o 'rcdiscover.*\.deb'); do \
-#         wget --quiet --user=$USER --password=$PW -O "/$file" "https://$REGISTRY_URL/repository/$FILE_REPO/$file"; \
-#     done
-# Download Debian package from Nexus using curl
-# RUN wget --quiet --user=$USER --password=$PW -O /rcdiscover.deb https://$REGISTRY_URL/repository/$FILE_REPO/rcdiscover*.deb
-
-# # Download Debian packages from Nexus using wget
-# RUN wget --quiet --user=$USER --password=$PW -O - "https://$REGISTRY_URL/repository/$FILE_REPO/" | \
-#     grep -oP '(?<=href=")[^"]*rcdiscover[^"]*\.deb' | \
-#     while read -r file; do \
-#         echo "Downloading https://$REGISTRY_URL/repository/$FILE_REPO/$file"; \
-#         wget --quiet --user=$USER --password=$PW -O "/$file" "https://$REGISTRY_URL/repository/$FILE_REPO/$file"; \
-#     done
-
-# Download all files from the specified folder in the Nexus repository using wget
-# RUN wget --quiet --recursive --no-parent --user=$USER --password=$PW --cut-dirs=3 -nH "https://$REGISTRY_URL/repository/$FILE_REPO/"
-
-# List the downloaded files for verification
-# RUN ls -l rcdiscover
-
-# Install Debian packages and handle missing dependencies
-#RUN dpkg -i rcdiscover/rcdiscover*.deb || apt-get install -f -y
-
-# Clean up the .deb files
-#RUN rm rcdiscover/rcdiscover*.deb
 
 
 
