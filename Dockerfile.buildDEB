@@ -75,7 +75,7 @@ RUN cd build && \
 # Create a zip file containing the Debian packages
 # ================================================
 RUN cd build/_CPack_Packages/Linux/DEB && \
-    zip ../../../../discovery.zip rcdiscover*.deb
+    zip discovery.zip rcdiscover*.deb
 
 # Upload zip file to Nexus using curl
 # ================================
