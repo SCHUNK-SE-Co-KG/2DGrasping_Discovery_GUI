@@ -98,7 +98,10 @@ RUN cd build && \
 # RUN wget --quiet --user=$USER --password=$PW -O /rcdiscover.deb https://$REGISTRY_URL/repository/$FILE_REPO/rcdiscover*.deb
 
 # Download Debian packages from Nexus using wget
-RUN for file in $(wget --quiet --user=$USER --password=$PW -O - "https://$REGISTRY_URL/repository/$FILE_REPO/" | grep -oP '(?<=href=")[^"]*rcdiscover[^"]*\.deb'); do \
+RUN wget --quiet --user=$USER --password=$PW -O - "https://$REGISTRY_URL/repository/$FILE_REPO/" | \
+    grep -oP '(?<=href=")[^"]*rcdiscover[^"]*\.deb' | \
+    while read -r file; do \
+        echo "Downloading https://$REGISTRY_URL/repository/$FILE_REPO/$file"; \
         wget --quiet --user=$USER --password=$PW -O "/$file" "https://$REGISTRY_URL/repository/$FILE_REPO/$file"; \
     done
 
