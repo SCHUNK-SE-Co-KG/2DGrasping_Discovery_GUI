@@ -95,6 +95,15 @@ See `debian/50-rcdiscover-rpfilter.conf` for an example.
 
 If you built a Debian package with `make package`, it will automatically ask you if you want to disable reverse path filtering at package installation.
 
+Download the Debian package from Nexus
+------------------------------
+Download the packages from <a href="https://nexus.cloud.schunk.com/repository/tf-files/rcdiscover/discovery.zip">here</a>, upzip the downloaded file .
+
+Install the Debian package using 
+```
+sudo dpkg -i rcdiscover*.deb
+```
+
 Compiling on Windows
 --------------------
 
