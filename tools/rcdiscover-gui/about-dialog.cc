@@ -46,7 +46,7 @@
 #define TOSTRING(x) STRINGIFY(x)
 
 static const std::string rc_copyright = "Copyright (c) 2017 Roboception GmbH";
-static const std::string rc_license = "The source code of rcdiscover is available under the 3-clause BSD license.";
+static const std::string rc_license = "The source code is available under the 3-clause BSD license.";
 static const std::string wx_license = "This program contains code from the \
 LGPLed library wxWidgets (http://www.wxwidgets.org/).";
 
@@ -54,7 +54,7 @@ AboutDialog::AboutDialog(wxWindow *parent, wxWindowID id,
                          const wxPoint &pos,
                          long style,
                          const wxString &name) :
-  wxDialog(parent, id, "About rcdiscover", pos, wxSize(420, 400), style, name)
+  wxDialog(parent, id, "About SCHUNK Discovery Tool", pos, wxSize(420, 400), style, name)
 {
   auto *panel = new wxPanel(this);
   auto *vbox = new wxBoxSizer(wxVERTICAL);
