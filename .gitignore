@@ -3,7 +3,6 @@ build
 *~
 *.swp
 
-.*
+
 !.gitignore
-!.gitlab-ci.yml
 !.dockerignore

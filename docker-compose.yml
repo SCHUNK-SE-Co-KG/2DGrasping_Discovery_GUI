@@ -13,6 +13,7 @@ services:
     environment:
       - DISPLAY=$DISPLAY
     volumes:
+      - /run:/run:rw
       - /tmp/.X11-unix:/tmp/.X11-unix
     stdin_open: true
     tty: true

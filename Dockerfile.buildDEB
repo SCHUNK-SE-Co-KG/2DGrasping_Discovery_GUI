@@ -1,7 +1,7 @@
-ARG START_IMAGE="python:3.10.7-slim"
+ARG BASE_IMAGE_NAME="python:3.10.7-slim"
 #==================================================================================================
 
-FROM ${START_IMAGE} AS base
+FROM ${BASE_IMAGE_NAME} AS base
 
 
 
@@ -35,7 +35,13 @@ RUN apt-get update && \
     apt-get install -y \
     libcanberra-gtk3-module \
     file \
+    curl \
+    wget \
+    zip \
+    unzip \
+    procps \
     && apt-get clean
+
 
 # Copy the rcdiscover source code into the container
 #==================================================================================================
@@ -58,22 +64,43 @@ RUN cd build && \
 # Expose any necessary ports if applicable
 #==================================================================================================
 RUN cd build && \
-  cmake -DBUILD_RCDISCOVER_GUI=ON .. && cmake -DCMAKE_INSTALL_PREFIX="/usr" .. && make install 
+  cmake -DBUILD_RCDISCOVER_GUI=ON .. && make  
 
-# Start the D-Bus service
-RUN dbus-uuidgen > /var/lib/dbus/machine-id
+# Make debian Package
+# ===========================================
+RUN cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX="/usr" .. && \
+    make && \
+    make package
 
-# Set environment variable to disable accessibility bus
-ENV NO_AT_BRIDGE=1
+# Create a zip file containing the Debian packages
+# ================================================
+RUN cd build/_CPack_Packages/Linux/DEB && \
+    zip discovery.zip rcdiscover*.deb
 
-# Set the entry point or command to execute the application on start
-#==================================================================================================
-WORKDIR /rcdiscover/build/tools
-RUN chmod +x rcdiscover-gui
-ENTRYPOINT ["/bin/bash", "-c" ,"./rcdiscover-gui"] 
+# Upload zip file to Nexus using curl
+# ================================
+ARG USER
+ARG PW
+ARG REGISTRY_URL=nexus.cloud.schunk.com
+ARG FILE_REPO=tf-files/rcdiscover
 
-# if not required to run the application on start, use the following command
-#==================================================================================================
-# ENTRYPOINT ["/bin/bash"]
-# CMD [ "./rcdiscover-gui" ]
+RUN cd build/_CPack_Packages/Linux/DEB && \
+    curl -v -u $USER:$PW --upload-file discovery.zip https://$REGISTRY_URL/repository/$FILE_REPO/discovery.zip
+
+# Download zip file from Nexus using wget
+# =======================================
+WORKDIR /downloaded
+
+RUN wget --quiet --user=$USER --password=$PW -O discovery.zip https://$REGISTRY_URL/repository/$FILE_REPO/discovery.zip
+
+# Unzip the downloaded file
+# =======================================
+RUN unzip discovery.zip -d /downloaded
+
+# Clean up the .deb files and zip file
+# =======================================
+RUN rm /downloaded/rcdiscover*.deb discovery.zip
+
+
 

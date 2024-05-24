@@ -118,6 +118,10 @@ if (NOT DEFINED CPACK_DEBIAN_PACKAGE_SHLIBDEPS)
     set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 endif ()
 
+if (NOT DEFINED CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS)
+    set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
+endif ()
+
 # ??? this defaults to PROJECT_LIBRARIES which should be defined in main CMakeLists.txt before including this file
 # list of shared library this package provides (; separated, comment or empty list if there are none)
 # IMPORTANT: also the lib needs to set SOVERSION via set_target_properties, e.g.:
