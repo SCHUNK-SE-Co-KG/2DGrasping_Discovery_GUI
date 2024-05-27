@@ -97,7 +97,7 @@ If you built a Debian package with `make package`, it will automatically ask you
 
 Download the Debian package from Nexus
 ------------------------------
-Download the packages from <a href="https://nexus.cloud.schunk.com/repository/tf-files/rcdiscover/discovery.zip">here</a>, upzip the downloaded file .
+Download the packages from <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/rcdiscover/discovery.zip">here</a>, upzip the downloaded file .
 
 Install the Debian package using 
 ```
