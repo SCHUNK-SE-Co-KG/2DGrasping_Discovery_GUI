@@ -83,7 +83,7 @@ RUN cd build/_CPack_Packages/Linux/DEB && \
 ARG USER
 ARG PW
 ARG REGISTRY_URL=nexus.cloud.schunk.com
-ARG FILE_REPO=tf-files/rcdiscover
+ARG FILE_REPO=tf-raw-bionic-packages/rcdiscover
 
 RUN cd build/_CPack_Packages/Linux/DEB && \
     curl -v -u $USER:$PW --upload-file discovery.zip https://$REGISTRY_URL/repository/$FILE_REPO/discovery.zip
