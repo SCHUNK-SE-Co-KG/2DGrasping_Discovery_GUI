@@ -137,7 +137,7 @@ bool Discover::getResponse(std::vector<DeviceInfo> &info,
       {
         count--;
 
-        if (select(sock+1, &fds, NULL, NULL, &tv) > 0)
+        if (select((int)(sock+1), &fds, NULL, NULL, &tv) > 0)
         {
           // get package
 
