@@ -126,12 +126,16 @@ pacman -S mingw-w64-x86_64-cmake
 
 Finally, add the `bin` directory of MinGW to your PATH variable.It is normally found in`C:\msys64\mingw64\bin` for 64 bit installation .
 
+Open windows cmd terminal and check if  `mingw32-make` is installed.
+
 #### WxWidgets
 
 Static libraries of WxWidgets are required for the rcdiscover-gui. To build
 them, the steps from
 [here](https://wiki.wxwidgets.org/Compiling_wxWidgets_with_MinGW) have been
-adapted slightly:
+adapted slightly.
+
+Open windows cmd terminal in desired folder and run below commands:
 
 ```
 git clone https://github.com/wxWidgets/wxWidgets.git
@@ -143,6 +147,8 @@ mingw32-make -f makefile.gcc SHARED=0 BUILD=release -j4 CXXFLAGS="-mtune=generic
 ```
 
 #### rcdiscover
+
+Open windows cmd terminal in desired folder and run below commands:
 
 ```
 cd rcdiscover
