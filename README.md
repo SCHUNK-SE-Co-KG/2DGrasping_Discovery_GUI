@@ -96,8 +96,8 @@ See `debian/50-rcdiscover-rpfilter.conf` for an example.
 If you built a Debian package with `make package`, it will automatically ask you if you want to disable reverse path filtering at package installation.
 
 Download the Debian package from Nexus
-------------------------------
-Download the packages from <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/rcdiscover/discovery.zip">here</a>, upzip the downloaded file .
+--------------------------------------
+CICD pipeline wil upload the Debian package to Nexus and it can be downloaded from <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/rcdiscover/discovery.zip">here</a>, upzip the downloaded file .
 
 Install the Debian package using 
 ```
@@ -106,19 +106,25 @@ sudo dpkg -i rcdiscover*.deb
 
 Compiling on Windows
 --------------------
+### Installing MinGW-w64 using Msys2
 
-### Using MinGW-w64
+Use Msys2 for building, installing and running native Windows software.
+Download and install `msys2-x86_64-20240507.exe` from [here](https://www.msys2.org/#:~:text=Download%20the%20installer).
 
-Install MinGW-w64 by e.g. downloading `mingw-w64-install.exe` from
-[here](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/).
-During setup, choose i686 if you want to build 32 bit binaries, or x84_64 for
-64 bit. For Threads, select win32. The rest can stay default.
+Open mingw64 shell launcher under `c:\msys64`.
+Run following commands to  install some tools like the mingw-w64.
 
-Finally, add the `bin` directory of MinGW to your PATH variable. For 32 bit
-installation, it is normally found in
-`C:\Program Files (x86)\mingw-w64\i686-7.1.0-win32-dwarf-rt_v5-rev0\mingw64\bin`,
-for 64 bit it is
-`C:\Program Files\mingw-w64\x86_64-7.1.0-win32-seh-rt_v5-rev0\mingw64\bin`.
+
+```
+pacman -S mingw-w64-x86_64-gcc
+pacman -S mingw-w64-x86_64-make
+pacman -S mingw-w64-x86_64-cmake
+```
+
+**Note: In case certificate issue , add certificate information to  `C:\msys64\usr\ssl\certs\ca-bundle.crt` and reopen mingw64 shell launcher and run the above commands again. 
+
+
+Finally, add the `bin` directory of MinGW to your PATH variable.It is normally found in`C:\msys64\mingw64\bin` for 64 bit installation .
 
 #### WxWidgets
 
@@ -130,7 +136,8 @@ adapted slightly:
 ```
 git clone https://github.com/wxWidgets/wxWidgets.git
 cd wxWidgets
-git checkout v3.1.0  # or other stable version
+git checkout v3.2.5  # This is the stable version that worked.
+git submodule update  --init # update submodule
 cd build\msw
 mingw32-make -f makefile.gcc SHARED=0 BUILD=release -j4 CXXFLAGS="-mtune=generic -mno-abm" CFLAGS="-mtune=generic -mno-abm"
 ```
@@ -144,16 +151,13 @@ cd build-mingw32
 cmake -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_RCDISCOVER_GUI=ON -DwxWidgets_ROOT_DIR=<path to WxWidgets root folder> ..
 mingw32-make
 ```
+Finally,rebuild rcdiscover and executable `rcdiscover-gui.exe` will be found in `\rcdiscover\build-mingw32\tools`.
 
-**For the 32 bit build you may encounter a 0xc000007b error when running
+The manually uploaded executable is available  <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/rcdiscover/windows/rcdiscover-gui.exe">here</a> in Nexus repository.
+
+<!-- **For the 32 bit build you may encounter a 0xc000007b error when running
 rcdiscover-gui.exe.** This seems to be caused by a bug in WxWidgets build. As
 a workaround, rename `rcdefs.h` in `lib\gcc_lib\mswu\wx\msw` in your WxWidgets
 root directory to something different (e.g., `rcdefs.h_old`). Then, rerun
 above WxWidgets build command:
 
-```
-cd build\msw
-mingw32-make -f makefile.gcc SHARED=0 BUILD=release -j4 CXXFLAGS="-mtune=generic -mno-abm" CFLAGS="-mtune=generic -mno-abm"
-```
-
-Finally, rebuild rcdiscover.
