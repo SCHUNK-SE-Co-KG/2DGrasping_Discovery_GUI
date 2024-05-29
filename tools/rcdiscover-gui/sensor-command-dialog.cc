@@ -17,7 +17,7 @@
 #include "discover-frame.h"
 
 #include <sstream>
-
+#include <stdint.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>

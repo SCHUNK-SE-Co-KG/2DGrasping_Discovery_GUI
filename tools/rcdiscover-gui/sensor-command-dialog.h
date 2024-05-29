@@ -16,6 +16,7 @@
 #include <array>
 #include <unordered_map>
 #include <vector>
+#include <stdint.h>
 
 class wxChoice;
 class wxTextCtrl;
