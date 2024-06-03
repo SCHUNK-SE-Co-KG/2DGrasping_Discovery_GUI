@@ -1,7 +1,7 @@
-rcdiscover_amd64:
+schunkdiscover_amd64:
 
   variables: 
-    IMAGE_NAME: "rcdiscover"
+    IMAGE_NAME: "schunkdiscover"
     ARCH: "amd64"
     BASE_IMAGE_NAME: "python:3.10.7-slim"
 

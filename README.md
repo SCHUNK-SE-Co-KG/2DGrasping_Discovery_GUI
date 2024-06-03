@@ -1,4 +1,4 @@
-<b>This is a fork of <a href="https://github.com/roboception/rcdiscover">rcdiscover</a> at commit ec316a8a32ae8bdf38ac2c1af7c7693ea5a0fadd.</b>
+<b>This is a fork of <a href="https://github.com/roboception/schunkdiscover">rcdiscover</a> at commit ec316a8a32ae8bdf38ac2c1af7c7693ea5a0fadd.</b>
 
 Changes:
 - Updated company labels and icons to reflect SCHUNK.
@@ -6,24 +6,23 @@ Changes:
 
 Below is the original readme:
 
-Discovery of roboception sensors
+Discovery of sensors
 ================================
 
-This package contains tools for the discovery of Roboception devices
-(e.g. rc_visard and rc_cube) via GigE Vision.
+This package contains tools for the discovery of devices via GigE Vision.
 
-- `rcdiscover`: console application for discovering Roboception devices
-- `rcdiscover-gui`: graphical application for discovering Roboception devices and
+- `schunkdiscover`: console application for discovering devices
+- `schunkdiscover-gui`: graphical application for discovering devices and
   sending magic packets for resetting of parameters
 
-**Installation:** You can find some prebuilt packages for Linux or Windows on the [releases](https://github.com/roboception/rcdiscover/releases) page. Alternatively follow the compilation steps in the next sections.
+**Installation:** You can find some prebuilt packages for Linux or Windows on the [releases](https://github.com/roboception/schunkdiscover/releases) page. Alternatively follow the compilation steps in the next sections.
 
 Compiling on Linux
 ------------------
 
-For compilation of `rcdiscover` cmake is required.
+For compilation of `schunkdiscover` cmake is required.
 
-`rcdiscover-gui` additionally requires [WxWidgets](http://www.wxwidgets.org/).
+`schunkdiscover-gui` additionally requires [WxWidgets](http://www.wxwidgets.org/).
 
 To install this under Debian/Ubuntu >= 20.04.0:
 ```
@@ -32,7 +31,7 @@ sudo apt-get install cmake libwxgtk3.0-gtk3-dev
 
 In older distributions, the package is called libwxgtk3.0-dev
 
-### Building rcdiscover
+### Building schunkdiscover
 
 It's required to do an out-of-source build:
 
@@ -43,10 +42,10 @@ cmake ..
 make
 ```
 
-To build the gui as well, pass the CMAKE option `BUILD_RCDISCOVER_GUI`:
+To build the gui as well, pass the CMAKE option `BUILD_SCHUNKDISCOVER_GUI`:
 
 ```
-cmake -DBUILD_RCDISCOVER_GUI=ON ..
+cmake -DBUILD_SCHUNKDISCOVER_GUI=ON ..
 ```
 
 
@@ -66,7 +65,7 @@ On Debian (and derivatives like Ubuntu) Debian packages can be built with
 cmake -DCMAKE_INSTALL_PREFIX="/usr" ..
 make package
 ```
-which can be installed with e.g. `sudo dpkg -i rcdiscover*.deb`
+which can be installed with e.g. `sudo dpkg -i schunkdiscover*.deb`
 
 
 Discovering sensors in other subnets
@@ -91,17 +90,17 @@ sudo sysctl -w net.ipv4.conf.eth0.rp_filter=0
 ```
 Note: These settings are not persistent across reboots!
 To persist them you can add a file in `/etc/sysctl.d/` on most distributions.
-See `debian/50-rcdiscover-rpfilter.conf` for an example.
+See `debian/50-schunkdiscover-rpfilter.conf` for an example.
 
 If you built a Debian package with `make package`, it will automatically ask you if you want to disable reverse path filtering at package installation.
 
 Download the Debian package from Nexus
 --------------------------------------
-CICD pipeline wil upload the Debian package to Nexus and it can be downloaded from <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/rcdiscover/discovery.zip">here</a>, upzip the downloaded file .
+CICD pipeline wil upload the Debian package to Nexus and it can be downloaded from <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunkdiscover/discovery.zip">here</a>, upzip the downloaded file .
 
 Install the Debian package using 
 ```
-sudo dpkg -i rcdiscover*.deb
+sudo dpkg -i schunkdiscover*.deb
 ```
 
 Compiling on Windows
@@ -128,7 +127,7 @@ Finally, add the `bin` directory of MinGW to your PATH variable.It is normally f
 
 #### WxWidgets
 
-Static libraries of WxWidgets are required for the rcdiscover-gui. To build
+Static libraries of WxWidgets are required for the schunkdiscover-gui. To build
 them, the steps from
 [here](https://wiki.wxwidgets.org/Compiling_wxWidgets_with_MinGW) have been
 adapted slightly:
@@ -142,21 +141,21 @@ cd build\msw
 mingw32-make -f makefile.gcc SHARED=0 BUILD=release -j4 CXXFLAGS="-mtune=generic -mno-abm" CFLAGS="-mtune=generic -mno-abm"
 ```
 
-#### rcdiscover
+#### schunkdiscover
 
 ```
-cd rcdiscover
+cd schunkdiscover
 mkdir build-mingw32
 cd build-mingw32
-cmake -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_RCDISCOVER_GUI=ON -DwxWidgets_ROOT_DIR=<path to WxWidgets root folder> ..
+cmake -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_SCHUNKDISCOVER_GUI=ON -DwxWidgets_ROOT_DIR=<path to WxWidgets root folder> ..
 mingw32-make
 ```
-Finally,rebuild rcdiscover and executable `rcdiscover-gui.exe` will be found in `\rcdiscover\build-mingw32\tools`.
+Finally,rebuild schunkdiscover and executable `schunkdiscover-gui.exe` will be found in `\schunkdiscover\build-mingw32\tools`.
 
-The manually uploaded executable is available  <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/rcdiscover/windows/rcdiscover-gui.exe">here</a> in Nexus repository.
+The manually uploaded executable is available  <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunkdiscover/windows/schunkdiscover-gui.exe">here</a> in Nexus repository.
 
 <!-- **For the 32 bit build you may encounter a 0xc000007b error when running
-rcdiscover-gui.exe.** This seems to be caused by a bug in WxWidgets build. As
+schunkdiscover-gui.exe.** This seems to be caused by a bug in WxWidgets build. As
 a workaround, rename `rcdefs.h` in `lib\gcc_lib\mswu\wx\msw` in your WxWidgets
 root directory to something different (e.g., `rcdefs.h_old`). Then, rerun
 above WxWidgets build command:
