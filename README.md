@@ -1,4 +1,4 @@
-<b>This is a fork of <a href="https://github.com/roboception/schunkdiscover">schunkdiscover</a> at commit ec316a8a32ae8bdf38ac2c1af7c7693ea5a0fadd.</b>
+<b>This is a fork of <a href="https://github.com/roboception/schunkdiscover">rcdiscover</a> at commit ec316a8a32ae8bdf38ac2c1af7c7693ea5a0fadd.</b>
 
 Changes:
 - Updated company labels and icons to reflect SCHUNK.
@@ -6,14 +6,13 @@ Changes:
 
 Below is the original readme:
 
-Discovery of roboception sensors
+Discovery of sensors
 ================================
 
-This package contains tools for the discovery of Roboception devices
-(e.g. rc_visard and rc_cube) via GigE Vision.
+This package contains tools for the discovery of devices via GigE Vision.
 
-- `schunkdiscover`: console application for discovering Roboception devices
-- `schunkdiscover-gui`: graphical application for discovering Roboception devices and
+- `schunkdiscover`: console application for discovering devices
+- `schunkdiscover-gui`: graphical application for discovering devices and
   sending magic packets for resetting of parameters
 
 **Installation:** You can find some prebuilt packages for Linux or Windows on the [releases](https://github.com/roboception/schunkdiscover/releases) page. Alternatively follow the compilation steps in the next sections.
