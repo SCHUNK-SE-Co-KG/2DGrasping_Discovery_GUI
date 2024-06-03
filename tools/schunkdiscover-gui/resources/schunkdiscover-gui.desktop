@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=schunkdiscover
+Comment=Discover devices via GigE Vision
+Exec=schunkdiscover-gui
+Terminal=false
+Type=Application
+StartupNotify=true
+Icon=schunkdiscover-gui
+Categories=Utility;

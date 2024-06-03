@@ -1,4 +1,4 @@
-Template: rcdiscover/rpfilter
+Template: schunkdiscover/rpfilter
 Type: boolean
 Default: true
 Description: Would you like to disable Reverse Path Filtering on this machine?

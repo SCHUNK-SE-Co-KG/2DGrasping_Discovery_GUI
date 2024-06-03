@@ -43,13 +43,13 @@ RUN apt-get update && \
     && apt-get clean
 
 
-# Copy the rcdiscover source code into the container
+# Copy the schunkdiscover source code into the container
 #==================================================================================================
-COPY . /rcdiscover
+COPY . /schunkdiscover
 
 # Set the working directory
 #==================================================================================================
-WORKDIR /rcdiscover
+WORKDIR /schunkdiscover
 
 # Create the build directory
 #==================================================================================================
@@ -64,7 +64,7 @@ RUN cd build && \
 # Expose any necessary ports if applicable
 #==================================================================================================
 RUN cd build && \
-  cmake -DBUILD_RCDISCOVER_GUI=ON .. && make  
+  cmake -DBUILD_SCHUNKDISCOVER_GUI=ON .. && make  
 
 # Make debian Package
 # ===========================================
@@ -76,14 +76,14 @@ RUN cd build && \
 # Create a zip file containing the Debian packages
 # ================================================
 RUN cd build/_CPack_Packages/Linux/DEB && \
-    zip discovery.zip rcdiscover*.deb
+    zip discovery.zip schunkdiscover*.deb
 
 # Upload zip file to Nexus using curl
 # ================================
 ARG USER
 ARG PW
 ARG REGISTRY_URL=nexus.cloud.schunk.com
-ARG FILE_REPO=tf-raw-bionic-packages/rcdiscover
+ARG FILE_REPO=tf-raw-bionic-packages/schunkdiscover
 
 RUN cd build/_CPack_Packages/Linux/DEB && \
     curl -v -u $USER:$PW --upload-file discovery.zip https://$REGISTRY_URL/repository/$FILE_REPO/discovery.zip
@@ -100,7 +100,7 @@ RUN unzip discovery.zip -d /downloaded
 
 # Clean up the .deb files and zip file
 # =======================================
-RUN rm /downloaded/rcdiscover*.deb discovery.zip
+RUN rm /downloaded/schunkdiscover*.deb discovery.zip
 
 
 

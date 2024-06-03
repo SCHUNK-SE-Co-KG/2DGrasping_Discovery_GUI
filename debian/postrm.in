@@ -1,5 +1,5 @@
 #!/bin/sh
-# rcdiscover - the network discovery tool for Roboception devices
+# schunkdiscover - the network discovery tool for Roboception devices
 #
 # Copyright (c) 2017 Roboception GmbH
 # All rights reserved
@@ -35,8 +35,8 @@ set -e
 
 case "$1" in
     remove)
-      if [ -f /etc/sysctl.d/50-rcdiscover-rpfilter.conf ]; then
-        rm -f /etc/sysctl.d/50-rcdiscover-rpfilter.conf
+      if [ -f /etc/sysctl.d/50-schunkdiscover-rpfilter.conf ]; then
+        rm -f /etc/sysctl.d/50-schunkdiscover-rpfilter.conf
         sysctl --system > /dev/null
       fi
     ;;
