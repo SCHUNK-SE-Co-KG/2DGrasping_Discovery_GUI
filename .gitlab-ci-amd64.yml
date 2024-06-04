@@ -1,5 +1,10 @@
 schunkdiscover_amd64:
 
+  only:
+    - master
+    - tags
+    - triggers # for manual triggers
+
   variables: 
     IMAGE_NAME: "schunkdiscover"
     ARCH: "amd64"
