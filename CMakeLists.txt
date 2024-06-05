@@ -1,4 +1,4 @@
-# rcdiscover - the network discovery tool for Roboception devices
+# schunkdiscover - the network discovery tool for Roboception devices
 #
 # Copyright (c) 2019 Roboception GmbH
 # All rights reserved
@@ -33,7 +33,7 @@
 
 cmake_minimum_required (VERSION 3.1)
 
-project(rcdiscover)
+project(schunkdiscover)
 
 include(cmake/project_version.cmake)
 include(GNUInstallDirs)
@@ -72,22 +72,22 @@ if (WIN32)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static")
 endif ()
 
-option(BUILD_RCDISCOVER_CLI "build rcdiscover commandline tool" ON)
-option(BUILD_RCDISCOVER_SHARED_LIB "build rcdiscover shared library" ON)
-option(BUILD_RCDISCOVER_GUI "build rcdiscover-gui GUI tool" OFF)
+option(BUILD_SCHUNKDISCOVER_CLI "build schunkdiscover commandline tool" ON)
+option(BUILD_SCHUNKDISCOVER_SHARED_LIB "build schunkdiscover shared library" ON)
+option(BUILD_SCHUNKDISCOVER_GUI "build schunkdiscover-gui GUI tool" OFF)
 
 if (WIN32)
-  set(BUILD_RCDISCOVER_SHARED_LIB OFF CACHE BOOL "Override option" FORCE)
+  set(BUILD_SCHUNKDISCOVER_SHARED_LIB OFF CACHE BOOL "Override option" FORCE)
 endif ()
 
 # - Build individual parts -
-add_subdirectory(rcdiscover)
+add_subdirectory(schunkdiscover)
 add_subdirectory(tools)
 
 # - Define information for packaging -
-if (BUILD_RCDISCOVER_SHARED_LIB)
-  set(PROJECT_LIBRARIES rcdiscover)
-  install(FILES package.xml COMPONENT bin DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/rcdiscover)
+if (BUILD_SCHUNKDISCOVER_SHARED_LIB)
+  set(PROJECT_LIBRARIES schunkdiscover)
+  install(FILES package.xml COMPONENT bin DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/schunkdiscover)
 endif()
 
 include(cmake/configure_link_libs.cmake)
@@ -95,7 +95,7 @@ include(cmake/configure_link_libs.cmake)
 
 if (UNIX)
   # install example sysctl config to disable reverse path filtering
-  install(FILES debian/50-rcdiscover-rpfilter.conf COMPONENT bin DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/rcdiscover)
+  install(FILES debian/50-schunkdiscover-rpfilter.conf COMPONENT bin DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/schunkdiscover)
 endif ()
 
 include(cmake/package_debian.cmake)

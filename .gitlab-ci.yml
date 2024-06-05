@@ -5,7 +5,7 @@ variables:
   BASE_IMAGE_NAME: "python:3.10.7-slim"
   BASE_IMAGE_TAG: latest
   IMAGE_PREFIX: "tf-grasp-sensor"
-  IMAGE_NAME: "rcdiscover"
+  IMAGE_NAME: "schunkdiscover"
   
 stages:
   - build

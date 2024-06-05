@@ -1,4 +1,4 @@
-# rcdiscover - the network discovery tool for Roboception devices
+# schunkdiscover - the network discovery tool for Roboception devices
 #
 # Copyright (c) 2019 Roboception GmbH
 # All rights reserved
@@ -36,49 +36,49 @@ project(tools CXX)
 # build programs
 
 #
-# rcdiscover commandline program
+# schunkdiscover commandline program
 #
-if (BUILD_RCDISCOVER_CLI)
-  add_executable(rcdiscover-cli
-    rcdiscover.cc
-    rcdiscover-cli/rcdiscover_discover.cc
-    rcdiscover-cli/rcdiscover_reconnect.cc
-    rcdiscover-cli/rcdiscover_force_ip.cc
-    rcdiscover-cli/rcdiscover_reset.cc
-    rcdiscover-cli/cli_utils.cc)
-  target_link_libraries(rcdiscover-cli ${PROJECT_NAMESPACE}::rcdiscover_static)
+if (BUILD_SCHUNKDISCOVER_CLI)
+  add_executable(schunkdiscover-cli
+    schunkdiscover.cc
+    schunkdiscover-cli/schunkdiscover_discover.cc
+    schunkdiscover-cli/schunkdiscover_reconnect.cc
+    schunkdiscover-cli/schunkdiscover_force_ip.cc
+    schunkdiscover-cli/schunkdiscover_reset.cc
+    schunkdiscover-cli/cli_utils.cc)
+  target_link_libraries(schunkdiscover-cli ${PROJECT_NAMESPACE}::schunkdiscover_static)
 
   if (WIN32)
-    target_link_libraries(rcdiscover-cli iphlpapi.lib ws2_32.lib)
-    set_target_properties(rcdiscover-cli PROPERTIES LINK_FLAGS -mconsole)
+    target_link_libraries(schunkdiscover-cli iphlpapi.lib ws2_32.lib)
+    set_target_properties(schunkdiscover-cli PROPERTIES LINK_FLAGS -mconsole)
   endif(WIN32)
-  set_target_properties(rcdiscover-cli PROPERTIES OUTPUT_NAME "rcdiscover")
-  install(TARGETS rcdiscover-cli COMPONENT bin DESTINATION bin)
+  set_target_properties(schunkdiscover-cli PROPERTIES OUTPUT_NAME "schunkdiscover")
+  install(TARGETS schunkdiscover-cli COMPONENT bin DESTINATION bin)
 endif ()
 
 
 #
-# rcdiscover-gui program
+# schunkdiscover-gui program
 #
-if(BUILD_RCDISCOVER_GUI)
+if(BUILD_SCHUNKDISCOVER_GUI)
   # - Find manditory packages -
   set(wxWidgets_USE_STATIC ON)
   set(wxWidgets_USE_UNICODE ON)
   find_package(wxWidgets REQUIRED COMPONENTS html adv core base)
   include(${wxWidgets_USE_FILE})
 
-  set(rcdiscover-gui-src
-    rcdiscover-gui.cc
-    rcdiscover-gui/event-ids.cc
-    rcdiscover-gui/discover-frame.cc
-    rcdiscover-gui/discover-thread.cc
-    rcdiscover-gui/sensor-command-dialog.cc
-    rcdiscover-gui/reset-dialog.cc
-    rcdiscover-gui/force-ip-dialog.cc
-    rcdiscover-gui/force-perm-ip-dialog.cc
-    rcdiscover-gui/reconnect-dialog.cc
-    rcdiscover-gui/about-dialog.cc
-    rcdiscover-gui/resources.cc)
+  set(schunkdiscover-gui-src
+    schunkdiscover-gui.cc
+    schunkdiscover-gui/event-ids.cc
+    schunkdiscover-gui/discover-frame.cc
+    schunkdiscover-gui/discover-thread.cc
+    schunkdiscover-gui/sensor-command-dialog.cc
+    schunkdiscover-gui/reset-dialog.cc
+    schunkdiscover-gui/force-ip-dialog.cc
+    schunkdiscover-gui/force-perm-ip-dialog.cc
+    schunkdiscover-gui/reconnect-dialog.cc
+    schunkdiscover-gui/about-dialog.cc
+    schunkdiscover-gui/resources.cc)
 
   if (WIN32)
     if(MINGW)
@@ -87,49 +87,49 @@ if(BUILD_RCDISCOVER_GUI)
       SET(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> -O coff <DEFINES> -i <SOURCE> -o <OBJECT> <INCLUDES>")
     endif(MINGW)
 
-    add_executable(rcdiscover-gui
-      ${rcdiscover-gui-src}
-      rcdiscover-gui/resources/resources.rc)
+    add_executable(schunkdiscover-gui
+      ${schunkdiscover-gui-src}
+      schunkdiscover-gui/resources/resources.rc)
 
   else (WIN32)
-    add_executable(rcdiscover-gui ${rcdiscover-gui-src})
+    add_executable(schunkdiscover-gui ${schunkdiscover-gui-src})
   endif (WIN32)
 
-  target_include_directories(rcdiscover-gui
+  target_include_directories(schunkdiscover-gui
     PRIVATE
       ${wxWidgets_INCLUDE_DIRS}
   )
-  target_link_libraries(rcdiscover-gui ${PROJECT_NAMESPACE}::rcdiscover_static ${wxWidgets_LIBRARIES})
+  target_link_libraries(schunkdiscover-gui ${PROJECT_NAMESPACE}::schunkdiscover_static ${wxWidgets_LIBRARIES})
 
   if (WIN32)
-    target_link_libraries(rcdiscover-gui iphlpapi.lib ws2_32.lib uxtheme)
-    set_target_properties(rcdiscover-gui PROPERTIES LINK_FLAGS -mwindows)
+    target_link_libraries(schunkdiscover-gui iphlpapi.lib ws2_32.lib uxtheme)
+    set_target_properties(schunkdiscover-gui PROPERTIES LINK_FLAGS -mwindows)
   endif (WIN32)
 
-  install(TARGETS rcdiscover-gui COMPONENT gui DESTINATION bin)
+  install(TARGETS schunkdiscover-gui COMPONENT gui DESTINATION bin)
 
   if (UNIX AND NOT APPLE)
     if (NOT CMAKE_INSTALL_DATADIR)
       set(CMAKE_INSTALL_DATADIR ${CMAKE_INSTALL_PREFIX}/share)
     endif ()
-    install(FILES rcdiscover-gui/resources/rcdiscover-gui.desktop
+    install(FILES schunkdiscover-gui/resources/schunkdiscover-gui.desktop
             COMPONENT gui
             DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-    install(FILES rcdiscover-gui/resources/logo_32.png
+    install(FILES schunkdiscover-gui/resources/logo_32.png
             COMPONENT gui
             DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/apps
-            RENAME rcdiscover-gui.png)
-    install(FILES rcdiscover-gui/resources/logo_64.png
+            RENAME schunkdiscover-gui.png)
+    install(FILES schunkdiscover-gui/resources/logo_64.png
             COMPONENT gui
             DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/64x64/apps
-            RENAME rcdiscover-gui.png)
-    install(FILES rcdiscover-gui/resources/logo_128.png
+            RENAME schunkdiscover-gui.png)
+    install(FILES schunkdiscover-gui/resources/logo_128.png
             COMPONENT gui
             DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/128x128/apps
-            RENAME rcdiscover-gui.png)
-    install(FILES rcdiscover-gui/resources/logo_32.png
+            RENAME schunkdiscover-gui.png)
+    install(FILES schunkdiscover-gui/resources/logo_32.png
             COMPONENT gui
             DESTINATION ${CMAKE_INSTALL_DATADIR}/pixmaps
-            RENAME rcdiscover-gui.png)
+            RENAME schunkdiscover-gui.png)
   endif ()
-endif(BUILD_RCDISCOVER_GUI)
+endif(BUILD_SCHUNKDISCOVER_GUI)

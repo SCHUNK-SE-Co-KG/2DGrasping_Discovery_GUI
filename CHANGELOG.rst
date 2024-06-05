@@ -1,5 +1,5 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package rcdiscover
+Changelog for package schunkdiscover
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1.1.7 (2024-03-12)
@@ -160,7 +160,7 @@ Changelog for package rcdiscover
 0.3.1 (2017-07-04)
 ------------------
 
-* Fixed rcdiscover console application
+* Fixed schunkdiscover console application
 
 0.3.0 (2017-07-04)
 ------------------

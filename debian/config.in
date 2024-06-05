@@ -1,5 +1,5 @@
 #!/bin/sh
-# rcdiscover - the network discovery tool for Roboception devices
+# schunkdiscover - the network discovery tool for Roboception devices
 #
 # Copyright (c) 2017 Roboception GmbH
 # All rights reserved
@@ -38,6 +38,6 @@ set -e
 . /usr/share/debconf/confmodule
 
 # Turn off rp filter?
-db_input critical rcdiscover/rpfilter || true
+db_input critical schunkdiscover/rpfilter || true
 db_go
 

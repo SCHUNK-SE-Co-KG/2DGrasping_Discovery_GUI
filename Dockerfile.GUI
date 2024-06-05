@@ -37,13 +37,13 @@ RUN apt-get update && \
     file \
     && apt-get clean
 
-# Copy the rcdiscover source code into the container
+# Copy the schunkdiscover source code into the container
 #==================================================================================================
-COPY . /rcdiscover
+COPY . /schunkdiscover
 
 # Set the working directory
 #==================================================================================================
-WORKDIR /rcdiscover
+WORKDIR /schunkdiscover
 
 # Create the build directory
 #==================================================================================================
@@ -58,7 +58,7 @@ RUN cd build && \
 # Expose any necessary ports if applicable
 #==================================================================================================
 RUN cd build && \
-  cmake -DBUILD_RCDISCOVER_GUI=ON .. && cmake -DCMAKE_INSTALL_PREFIX="/usr" .. && make install 
+  cmake -DBUILD_SCHUNKDISCOVER_GUI=ON .. && cmake -DCMAKE_INSTALL_PREFIX="/usr" .. && make install 
 
 # Start the D-Bus service
 RUN dbus-uuidgen > /var/lib/dbus/machine-id
@@ -68,12 +68,12 @@ ENV NO_AT_BRIDGE=1
 
 # Set the entry point or command to execute the application on start
 #==================================================================================================
-WORKDIR /rcdiscover/build/tools
-RUN chmod +x rcdiscover-gui
-ENTRYPOINT ["/bin/bash", "-c" ,"./rcdiscover-gui"] 
+WORKDIR /schunkdiscover/build/tools
+RUN chmod +x schunkdiscover-gui
+ENTRYPOINT ["/bin/bash", "-c" ,"./schunkdiscover-gui"] 
 
 # if not required to run the application on start, use the following command
 #==================================================================================================
 # ENTRYPOINT ["/bin/bash"]
-# CMD [ "./rcdiscover-gui" ]
+# CMD [ "./schunkdiscover-gui" ]
 
