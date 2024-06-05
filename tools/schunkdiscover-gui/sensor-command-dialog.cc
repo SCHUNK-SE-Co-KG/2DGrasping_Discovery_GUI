@@ -12,7 +12,7 @@
 
 #include "event-ids.h"
 #include "resources.h"
-
+#include "force-ip-dialog.h"
 #include "schunkdiscover/utils.h"
 #include "discover-frame.h"
 
@@ -37,15 +37,17 @@ SensorCommandDialog::SensorCommandDialog(wxHtmlHelpController *help_ctrl,
   wxDialog(parent, id, std::move(title), pos, wxSize(-1,-1), style, name),
   sensors_(nullptr),
   mac_{{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}},
+  senderip_{{nullptr, nullptr, nullptr, nullptr}},
   sensor_list_(nullptr),
   help_ctrl_(help_ctrl)
 {
   panel_ = new wxPanel(this, -1);
   vbox_ = new wxBoxSizer(wxVERTICAL);
 
-  grid_ = new wxFlexGridSizer(2 + additional_grid_rows, 2, 10, 25);
+  grid_ = new wxFlexGridSizer(3 + additional_grid_rows, 2, 10, 25);
+  grid_->AddGrowableCol(1, 1);  // Allow the second column to grow
 
-  auto *sensors_text = new wxStaticText(panel_, wxID_ANY, "rc_visard");
+  auto *sensors_text = new wxStaticText(panel_, wxID_ANY, "visard");
   grid_->Add(sensors_text);
 
   auto *sensors_box = new wxBoxSizer(wxHORIZONTAL);
@@ -71,9 +73,31 @@ SensorCommandDialog::SensorCommandDialog(wxHtmlHelpController *help_ctrl,
   }
   grid_->Add(mac_box, 1, wxEXPAND);
 
-  vbox_->Add(grid_, 0, wxALL | wxEXPAND, 15);
+  //vbox_->Add(grid_, 0, wxALL | wxEXPAND, 15);
 
+  //panel_->SetSizer(vbox_);
+
+  // Sender IP
+  auto *senderip_text = new wxStaticText(panel_, wxID_ANY, "New proposed IP address");
+  grid_->Add(senderip_text);
+  auto *senderip_box = new wxBoxSizer(wxHORIZONTAL);
+  i = 0;
+
+  for (auto& s : senderip_)
+  {
+    if (i > 0)
+    {
+      senderip_box->Add(new wxStaticText(panel_, ID_SenderIP_Textbox, "."));
+    }
+    s = new wxTextCtrl(panel_, wxID_ANY, wxEmptyString,
+                       wxDefaultPosition, wxSize(35, -1));
+    senderip_box->Add(s, 1);
+    ++i;
+  }
+  grid_->Add(senderip_box, 1, wxEXPAND);
+  vbox_->Add(grid_, 0, wxALL | wxEXPAND, 15);
   panel_->SetSizer(vbox_);
+
 
   Connect(ID_Sensor_Combobox,
           wxEVT_CHOICE,
@@ -100,9 +124,13 @@ void SensorCommandDialog::setDiscoveredSensors(
       {
         wxVariant hostname{};
         wxVariant mac{};
+        wxVariant interface{};
+        wxVariant sender{};
         sensor_list->GetValueByRow(hostname, i, DiscoverFrame::NAME);
         sensor_list->GetValueByRow(mac, i, DiscoverFrame::MAC);
-        const auto s = wxString::Format("%s - %s", hostname.GetString(), mac.GetString());
+        sensor_list->GetValueByRow(interface, i, DiscoverFrame::IFACE);
+        sensor_list ->GetValueByRow(sender, i, DiscoverFrame::SENDERIP);
+        const auto s = wxString::Format("%s(SenderIP: %s)", hostname.GetString(),  sender.GetString());
         sensors_->Append(s);
         row_map_.emplace(i, sensors_row + 1);
         row_map_inv_.emplace(sensors_row + 1, i);
@@ -123,6 +151,7 @@ void SensorCommandDialog::setActiveSensor(const unsigned int row)
   {
     sensors_->Select(found->second);
     fillMac();
+    fillSenderIp();
   }
   else
   {
@@ -144,6 +173,8 @@ wxFlexGridSizer *SensorCommandDialog::getGrid()
 {
   return grid_;
 }
+
+
 
 std::array<uint8_t, 6> SensorCommandDialog::getMac() const
 {
@@ -190,6 +221,50 @@ std::string SensorCommandDialog::getMacString() const
   return mac_string.str();
 }
 
+std::array<uint8_t, 4> SensorCommandDialog::getSenderIp() const
+{
+  std::array<uint8_t, 4> senderip;
+  for (uint8_t i = 0; i < 4; ++i)
+  {
+    const auto s = senderip_[i]->GetValue().ToStdString();
+
+    try
+    {
+      const auto v = std::stoul(s, nullptr, 10);
+      if (v > 255)
+      {
+        throw std::invalid_argument("");
+      }
+      senderip[i] = static_cast<uint8_t>(v);
+    }
+    catch(const std::invalid_argument&)
+    {
+      throw std::runtime_error(
+            std::string("Each sender ip address segment must contain ") +
+            "a decimal value ranging from 0 to 255.");
+    }
+  }
+  return senderip;
+}
+
+std::string SensorCommandDialog::getSenderIpString() const
+{
+  const auto senderip = getSenderIp();
+
+  std::ostringstream senderip_string;
+  bool first = true;
+  for (const auto s : senderip)
+  {
+    if (!first)
+    {
+      senderip_string << ".";
+    }
+    senderip_string << std::dec << static_cast<unsigned int>(s);
+    first = false;
+  }
+  return senderip_string.str();
+}
+
 void SensorCommandDialog::displayHelp(const std::string &section)
 {
   const std::string url = std::string("help.htm#") + section;
@@ -203,6 +278,7 @@ void SensorCommandDialog::displayHelp(const std::string &section)
 void SensorCommandDialog::clear()
 {
   clearMac();
+  clearSenderIp();
 }
 
 void SensorCommandDialog::onSensorSelected(wxCommandEvent &)
@@ -212,10 +288,12 @@ void SensorCommandDialog::onSensorSelected(wxCommandEvent &)
     if (sensors_->GetSelection() == 0)
     {
       clearMac();
+      clearSenderIp();
     }
     else
     {
       fillMac();
+      fillSenderIp();
     }
   }
 }
@@ -241,8 +319,43 @@ void SensorCommandDialog::fillMac()
     mac_[i]->ChangeValue(mac[i]);
     mac_[i]->SetEditable(false);
   }
+   
 }
 
+void SensorCommandDialog::fillSenderIp()
+{
+  const int row = sensors_->GetSelection();
+
+  if (row == wxNOT_FOUND)
+  {
+    return;
+  }
+
+  wxVariant senderip_string{};
+  sensor_list_->GetValueByRow(senderip_string,
+                              row_map_inv_.at(static_cast<unsigned int>(row)),
+                              DiscoverFrame::SENDERIP);
+
+  const auto senderip = split<4>(senderip_string.GetString().ToStdString(), '.');
+
+  for (uint8_t i = 0; i < 4; ++i)
+  {
+    if (i == 3)
+    {
+    // Parse each segment of the IP address string, add 1, and set the value
+    int ip_segment = std::stoi(senderip[i]) + 1;
+    if (ip_segment > 255) ip_segment = 255; // Ensure it doesn't exceed 255
+    senderip_[i]->ChangeValue(std::to_string(ip_segment));
+    senderip_[i]->SetEditable(true);
+    }
+    else
+    {
+
+    senderip_[i]->ChangeValue(senderip[i]);
+    senderip_[i]->SetEditable(true);
+    }
+  }
+}
 void SensorCommandDialog::clearMac()
 {
   sensors_->SetSelection(0);
@@ -251,6 +364,17 @@ void SensorCommandDialog::clearMac()
   {
     mac_[i]->Clear();
     mac_[i]->SetEditable(true);
+  }
+}
+
+void SensorCommandDialog::clearSenderIp()
+{
+  sensors_->SetSelection(0);
+
+  for (uint8_t i = 0; i < 4; ++i)
+  {
+    senderip_[i]->Clear();
+    senderip_[i]->SetEditable(true);
   }
 }
 

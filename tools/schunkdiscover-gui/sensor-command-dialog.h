@@ -46,7 +46,7 @@ class SensorCommandDialog : public wxDialog
                         const wxString &name = wxDialogNameStr);
 
     virtual ~SensorCommandDialog() = default;
-
+    std::array<uint8_t, 4> getSenderIp() const;
   public:
     /**
      * @brief Set list of discovered devices to provide a drop down menu
@@ -68,7 +68,9 @@ class SensorCommandDialog : public wxDialog
     wxPanel *getPanel();
     wxFlexGridSizer *getGrid();
     std::array<uint8_t, 6> getMac() const;
+    // std::array<uint8_t, 4> getSenderIp() const;
     std::string getMacString() const;
+    std::string getSenderIpString() const;
     void displayHelp(const std::string &section);
 
     /**
@@ -89,10 +91,20 @@ class SensorCommandDialog : public wxDialog
     void fillMac();
 
     /**
+     * @brief Fill SenderIp address according to selected device.
+     */
+    void fillSenderIp();
+
+    /**
      * @brief Clear MAC address.
      */
     void clearMac();
+    /**
+     * @brief Clear SenderIp address.
+     */
+    void clearSenderIp();
 
+    
     wxDECLARE_EVENT_TABLE();
 
   private:
@@ -101,6 +113,7 @@ class SensorCommandDialog : public wxDialog
     wxFlexGridSizer *grid_;
     wxChoice *sensors_;
     std::array<wxTextCtrl *, 6> mac_;
+    std::array<wxTextCtrl *, 4> senderip_;
     std::unordered_map<unsigned int, unsigned int> row_map_;
     std::unordered_map<unsigned int, unsigned int> row_map_inv_;
 

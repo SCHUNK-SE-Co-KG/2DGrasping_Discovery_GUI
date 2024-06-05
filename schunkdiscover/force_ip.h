@@ -45,11 +45,12 @@ class ForceIP
      * @param ip the desired IP address
      * @param subnet the desired subnet mask
      * @param gateway the desired default gateway
+     * @param is_temporary if true, the IP address is only temporary
      *
      * @note If \p ip is set to 0, the camera will perform a reconnect.
      */
     void sendCommand(std::uint64_t mac, std::uint32_t ip,
-                     std::uint32_t subnet, std::uint32_t gateway);
+                     std::uint32_t subnet, std::uint32_t gateway, bool is_temporary=true);
 
   private:
     std::vector<SocketType> sockets_;

@@ -120,7 +120,13 @@ void DeviceInfo::set(const uint8_t *raw, size_t len)
   if (len >= 216) manufacturer_info=extract(raw+168, 48);
   if (len >= 232) serial_number=extract(raw+216, 16);
   if (len >= 248) user_name=extract(raw+232, 16);
+  if (len >= 264)
+  {
+    sender_ip=0;
+    for (int i=0; i<4; i++) sender_ip=(sender_ip<<8)|raw[260+i];
+  }
 }
+
 
 void DeviceInfo::clear()
 {
@@ -136,6 +142,7 @@ void DeviceInfo::clear()
   manufacturer_info.erase();
   serial_number.erase();
   user_name.erase();
+  sender_ip=0;
 }
 
 }

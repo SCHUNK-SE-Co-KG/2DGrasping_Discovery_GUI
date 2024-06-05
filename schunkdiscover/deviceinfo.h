@@ -168,6 +168,14 @@ class DeviceInfo
     const std::string &getUserName() const { return user_name; }
 
     /**
+      Returns the sender IP address .
+
+      @return 4 bytes with an IPv4 address.
+    */
+
+    uint32_t getSenderIP() const { return sender_ip; }
+
+    /**
      * First compares the MAC address, then the interface name.
      */
 
@@ -197,6 +205,8 @@ class DeviceInfo
     std::string manufacturer_info;
     std::string serial_number;
     std::string user_name;
+    uint32_t dest_sock_addr;
+    uint32_t sender_ip;
 };
 
 }

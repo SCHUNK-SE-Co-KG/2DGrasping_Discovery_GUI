@@ -80,8 +80,9 @@ class DiscoverFrame : public wxFrame
       MAC = 5,
       IFACE = 6,
       REACHABLE = 7,
+      SENDERIP = 8,
 
-      NUM_COLUMNS = 8
+      NUM_COLUMNS = 9
     };
 
   private:

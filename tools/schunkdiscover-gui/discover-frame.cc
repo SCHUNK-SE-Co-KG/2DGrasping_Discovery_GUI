@@ -36,7 +36,7 @@
 // placed here to make sure to include winsock2.h before windows.h
 #include "schunkdiscover/wol.h"
 #include "schunkdiscover/utils.h"
-
+#include "sensor-command-dialog.h"
 #include "discover-frame.h"
 
 #include "discover-thread.h"
@@ -203,7 +203,7 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
                                    wxDATAVIEW_COL_RESIZABLE | wxDATAVIEW_COL_SORTABLE);
     device_list_->AppendTextColumn("Serial Number",
                                    wxDATAVIEW_CELL_INERT,
-                                   130, wxALIGN_LEFT,
+                                   130, wxALIGN_CENTER,
                                    wxDATAVIEW_COL_RESIZABLE | wxDATAVIEW_COL_SORTABLE);
     device_list_->AppendTextColumn("IP Address",
                                    wxDATAVIEW_CELL_INERT,
@@ -240,9 +240,10 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
                                     "Set temporary IP address");
     button_box->Add(force_ip_button_, 1);
 
-    force_perm_ip_button_ = new wxButton(panel, ID_ForcePermIpButton,
-                                    "Set permanent IP address");
-    button_box->Add(force_perm_ip_button_, 1);
+    // force_perm_ip_button_ = new wxButton(panel, ID_ForcePermIpButton,
+    //                                 "Set permanent IP address");
+    // button_box->Add(force_perm_ip_button_, 1);
+
 
     reconnect_button_ = new wxButton(panel, ID_ReconnectButton,
                                     "Reconnect device");
@@ -278,9 +279,9 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
   Connect(ID_ForceIpButton,
           wxEVT_COMMAND_BUTTON_CLICKED,
           wxCommandEventHandler(DiscoverFrame::onForceIpButton));
-  Connect(ID_ForcePermIpButton,
-          wxEVT_COMMAND_BUTTON_CLICKED,
-          wxCommandEventHandler(DiscoverFrame::onForcePermIpButton));
+  // Connect(ID_ForcePermIpButton,
+  //         wxEVT_COMMAND_BUTTON_CLICKED,
+  //         wxCommandEventHandler(DiscoverFrame::onForcePermIpButton));
   Connect(ID_ReconnectButton,
           wxEVT_COMMAND_BUTTON_CLICKED,
           wxCommandEventHandler(DiscoverFrame::onReconnectButton));
@@ -323,9 +324,9 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
   Connect(ID_ForceIpButton,
           wxEVT_MENU,
           wxMenuEventHandler(DiscoverFrame::onForceIpContextMenu));
-  Connect(ID_ForcePermIpButton,
-          wxEVT_MENU,
-          wxMenuEventHandler(DiscoverFrame::onForcePermIpContextMenu));
+  // Connect(ID_ForcePermIpButton,
+  //         wxEVT_MENU,
+  //         wxMenuEventHandler(DiscoverFrame::onForcePermIpContextMenu));
   Connect(ID_ReconnectButton,
           wxEVT_MENU,
           wxMenuEventHandler(DiscoverFrame::onReconnectContextMenu));
@@ -347,7 +348,7 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
 
   reset_dialog_ = new ResetDialog(help_ctrl_, panel, wxID_ANY);
   force_ip_dialog_ = new ForceIpDialog(help_ctrl_, panel, wxID_ANY);
-  force_perm_ip_dialog_ = new ForcePermIpDialog(help_ctrl_, panel, wxID_ANY);
+  // force_perm_ip_dialog_ = new ForcePermIpDialog(help_ctrl_, panel, wxID_ANY);
   reconnect_dialog_ = new ReconnectDialog(help_ctrl_, panel, wxID_ANY);
   about_dialog_ = new AboutDialog(panel, wxID_ANY);
 
@@ -363,7 +364,7 @@ void DiscoverFrame::setBusy()
   discover_button_->Disable();
   reset_button_->Disable();
   force_ip_button_->Disable();
-  force_perm_ip_button_->Disable();
+  // force_perm_ip_button_->Disable();
   reconnect_button_->Disable();
   spinner_ctrl_->Play();
 }
@@ -373,7 +374,7 @@ void DiscoverFrame::clearBusy()
   discover_button_->Enable();
   reset_button_->Enable();
   force_ip_button_->Enable();
-  force_perm_ip_button_->Enable();
+  // force_perm_ip_button_->Enable();
   reconnect_button_->Enable();
   spinner_ctrl_->Stop();
 
@@ -440,7 +441,7 @@ void DiscoverFrame::updateDeviceList(const std::vector<wxVector<wxVariant>> &d)
 
   reset_dialog_->setDiscoveredSensors(device_list_->GetStore(), show_in_reset_dialog);
   force_ip_dialog_->setDiscoveredSensors(device_list_->GetStore());
-  force_perm_ip_dialog_->setDiscoveredSensors(device_list_->GetStore());
+  // force_perm_ip_dialog_->setDiscoveredSensors(device_list_->GetStore());
   reconnect_dialog_->setDiscoveredSensors(device_list_->GetStore());
 }
 
@@ -463,10 +464,10 @@ void DiscoverFrame::onForceIpButton(wxCommandEvent &)
   openForceIpDialog(device_list_->GetSelectedRow());
 }
 
-void DiscoverFrame::onForcePermIpButton(wxCommandEvent &)
-{
-  openForcePermIpDialog(device_list_->GetSelectedRow());
-}
+// void DiscoverFrame::onForcePermIpButton(wxCommandEvent &)
+// {
+//   openForcePermIpDialog(device_list_->GetSelectedRow());
+// }
 
 void DiscoverFrame::onReconnectButton(wxCommandEvent &)
 {
@@ -536,7 +537,7 @@ void DiscoverFrame::onDataViewContextMenu(wxDataViewEvent &event)
 
   menu.Append(ID_ForceIpButton, "Set temporary IP");
   menu.Append(ID_ReconnectButton, "Reconnect");
-  menu.Append(ID_ForcePermIpButton, "Set permanent IP");
+  // menu.Append(ID_ForcePermIpButton, "Set permanent IP");
 
   PopupMenu(&menu);
 }
@@ -617,16 +618,16 @@ void DiscoverFrame::onForceIpContextMenu(wxMenuEvent &)
   openForceIpDialog(menu_event_item_->first);
 }
 
-void DiscoverFrame::onForcePermIpContextMenu(wxMenuEvent &)
-{
-  if (!menu_event_item_ ||
-      menu_event_item_->first < 0)
-  {
-    return;
-  }
+// void DiscoverFrame::onForcePermIpContextMenu(wxMenuEvent &)
+// {
+//   if (!menu_event_item_ ||
+//       menu_event_item_->first < 0)
+//   {
+//     return;
+//   }
 
-  openForcePermIpDialog(menu_event_item_->first);
-}
+//   openForcePermIpDialog(menu_event_item_->first);
+// }
 
 void DiscoverFrame::onReconnectContextMenu(wxMenuEvent &)
 {
@@ -694,15 +695,15 @@ void DiscoverFrame::openForceIpDialog(const int row)
   force_ip_dialog_->Show();
 }
 
-void DiscoverFrame::openForcePermIpDialog(const int row)
-{
-  if (row != wxNOT_FOUND)
-  {
-    force_perm_ip_dialog_->setActiveSensor(static_cast<unsigned int>(row));
-  }
+// void DiscoverFrame::openForcePermIpDialog(const int row)
+// {
+//   if (row != wxNOT_FOUND)
+//   {
+//     force_perm_ip_dialog_->setActiveSensor(static_cast<unsigned int>(row));
+//   }
 
-  force_perm_ip_dialog_->Show();
-}
+//   force_perm_ip_dialog_->Show();
+// }
 
 
 void DiscoverFrame::openReconnectDialog(const int row)
