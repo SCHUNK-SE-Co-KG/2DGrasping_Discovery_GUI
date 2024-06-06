@@ -30,6 +30,7 @@ class ForcePermIpDialog : public SensorCommandDialog
                   const wxString &name = wxDialogNameStr);
 
     virtual ~ForcePermIpDialog() = default;
+    void onForcePermIpButton(wxCommandEvent &event);
 
   private:
     void addIpToBoxSizer(wxBoxSizer *sizer,
@@ -42,7 +43,7 @@ class ForcePermIpDialog : public SensorCommandDialog
   private:
     void onClearButton(wxCommandEvent &event);
 
-    void onForcePermIpButton(wxCommandEvent &event);
+    // void onForcePermIpButton(wxCommandEvent &event);
     void onHelpButton(wxCommandEvent &event);
 
     void onPermIpChanged(wxCommandEvent &event);

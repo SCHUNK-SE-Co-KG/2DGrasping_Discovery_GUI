@@ -30,6 +30,7 @@ class ForceIpDialog : public SensorCommandDialog
                   const wxString &name = wxDialogNameStr);
 
     virtual ~ForceIpDialog() = default;
+    void onForceIpButton(wxCommandEvent &event);
 
   private:
     void addIpToBoxSizer(wxBoxSizer *sizer,
@@ -42,7 +43,7 @@ class ForceIpDialog : public SensorCommandDialog
   private:
     void onClearButton(wxCommandEvent &event);
 
-    void onForceIpButton(wxCommandEvent &event);
+    // void onForceIpButton(wxCommandEvent &event);
     void onHelpButton(wxCommandEvent &event);
 
     void onIpChanged(wxCommandEvent &event);

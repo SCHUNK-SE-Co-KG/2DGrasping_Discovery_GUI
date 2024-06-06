@@ -47,7 +47,7 @@ SensorCommandDialog::SensorCommandDialog(wxHtmlHelpController *help_ctrl,
   grid_ = new wxFlexGridSizer(3 + additional_grid_rows, 2, 10, 25);
   grid_->AddGrowableCol(1, 1);  // Allow the second column to grow
 
-  auto *sensors_text = new wxStaticText(panel_, wxID_ANY, "visard");
+  auto *sensors_text = new wxStaticText(panel_, wxID_ANY, "Device");
   grid_->Add(sensors_text);
 
   auto *sensors_box = new wxBoxSizer(wxHORIZONTAL);
@@ -344,7 +344,7 @@ void SensorCommandDialog::fillSenderIp()
     {
     // Parse each segment of the IP address string, add 1, and set the value
     int ip_segment = std::stoi(senderip[i]) + 1;
-    if (ip_segment > 255) ip_segment = 255; // Ensure it doesn't exceed 255
+    if (ip_segment > 255) ip_segment = 1; // Ensure it doesn't exceed 255
     senderip_[i]->ChangeValue(std::to_string(ip_segment));
     senderip_[i]->SetEditable(true);
     }

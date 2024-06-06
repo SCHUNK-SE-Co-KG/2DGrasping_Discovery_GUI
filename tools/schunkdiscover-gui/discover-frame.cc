@@ -72,6 +72,7 @@
 #include "resources/logo_32_rotate.h"
 #include <wx/utils.h>
 #include <wx/wx.h>
+#include <wx/busyinfo.h>
 
 static bool isMadeByRc(const wxVector<wxVariant> &device)
 {
@@ -222,7 +223,7 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
                                    80, wxALIGN_CENTER,
                                    wxDATAVIEW_COL_RESIZABLE | wxDATAVIEW_COL_SORTABLE);
 
-    device_list_->SetToolTip("Double-click row to open WebGUI in browser.");
+    device_list_->SetToolTip("Select row to enable open button.");
 
     data_box->Add(device_list_, 1, wxEXPAND);
 
@@ -231,25 +232,32 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
 
   {
     auto *button_box = new wxBoxSizer(wxHORIZONTAL);
-    reset_button_ = new wxButton(panel, ID_ResetButton, "Reset visard");
-    button_box->Add(reset_button_, 1);
+    // reset_button_ = new wxButton(panel, ID_ResetButton, "Reset visard");
+    // button_box->Add(reset_button_, 1);
     int w, h;
-    reset_button_->GetSize(&w, &h);
+    // reset_button_->GetSize(&w, &h);
+    // button_box->AddSpacer(10);
 
     force_ip_button_ = new wxButton(panel, ID_ForceIpButton,
-                                    "Set temporary IP address");
+                                    "Open");
     button_box->Add(force_ip_button_, 1);
+    // add tooltip to force_ip_button_
+    force_ip_button_->SetToolTip("Set temporary IP and Open WebGUI of selected device");
+    force_ip_button_->GetSize(&w, &h);
+    button_box->AddSpacer(10);
 
-    // force_perm_ip_button_ = new wxButton(panel, ID_ForcePermIpButton,
-    //                                 "Set permanent IP address");
-    // button_box->Add(force_perm_ip_button_, 1);
+    force_perm_ip_button_ = new wxButton(panel, ID_ForcePermIpButton,
+                                    "Set permanent IP");
+    button_box->Add(force_perm_ip_button_, 1);
+    button_box->AddSpacer(10);
 
 
-    reconnect_button_ = new wxButton(panel, ID_ReconnectButton,
-                                    "Reconnect device");
-    button_box->Add(reconnect_button_, 1);
+    // reconnect_button_ = new wxButton(panel, ID_ReconnectButton,
+    //                                 "Reconnect device");
+    // button_box->Add(reconnect_button_, 1);
 
     button_box->Add(-1, 0, wxEXPAND);
+    // button_box->AddSpacer(10);
 
     auto *help_button = new wxContextHelpButton(panel, ID_Help_Discovery,
                                                 wxDefaultPosition, wxSize(h,h));
@@ -279,18 +287,18 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
   Connect(ID_ForceIpButton,
           wxEVT_COMMAND_BUTTON_CLICKED,
           wxCommandEventHandler(DiscoverFrame::onForceIpButton));
-  // Connect(ID_ForcePermIpButton,
-  //         wxEVT_COMMAND_BUTTON_CLICKED,
-  //         wxCommandEventHandler(DiscoverFrame::onForcePermIpButton));
+  Connect(ID_ForcePermIpButton,
+          wxEVT_COMMAND_BUTTON_CLICKED,
+          wxCommandEventHandler(DiscoverFrame::onForcePermIpButton));
   Connect(ID_ReconnectButton,
           wxEVT_COMMAND_BUTTON_CLICKED,
           wxCommandEventHandler(DiscoverFrame::onReconnectButton));
   Connect(ID_Help_Discovery,
           wxEVT_COMMAND_BUTTON_CLICKED,
           wxCommandEventHandler(DiscoverFrame::onHelpDiscovery));
-  Connect(ID_DataViewListCtrl,
-          wxEVT_DATAVIEW_ITEM_ACTIVATED,
-          wxDataViewEventHandler(DiscoverFrame::onDeviceDoubleClick));
+  // Connect(ID_DataViewListCtrl,
+  //         wxEVT_DATAVIEW_ITEM_ACTIVATED,
+  //         wxDataViewEventHandler(DiscoverFrame::onDeviceDoubleClick));
   Connect(ID_DataViewListCtrl,
           wxEVT_DATAVIEW_SELECTION_CHANGED,
           wxDataViewEventHandler(DiscoverFrame::onDeviceSelection));
@@ -324,9 +332,9 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
   Connect(ID_ForceIpButton,
           wxEVT_MENU,
           wxMenuEventHandler(DiscoverFrame::onForceIpContextMenu));
-  // Connect(ID_ForcePermIpButton,
-  //         wxEVT_MENU,
-  //         wxMenuEventHandler(DiscoverFrame::onForcePermIpContextMenu));
+  Connect(ID_ForcePermIpButton,
+          wxEVT_MENU,
+          wxMenuEventHandler(DiscoverFrame::onForcePermIpContextMenu));
   Connect(ID_ReconnectButton,
           wxEVT_MENU,
           wxMenuEventHandler(DiscoverFrame::onReconnectContextMenu));
@@ -348,7 +356,7 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
 
   reset_dialog_ = new ResetDialog(help_ctrl_, panel, wxID_ANY);
   force_ip_dialog_ = new ForceIpDialog(help_ctrl_, panel, wxID_ANY);
-  // force_perm_ip_dialog_ = new ForcePermIpDialog(help_ctrl_, panel, wxID_ANY);
+  force_perm_ip_dialog_ = new ForcePermIpDialog(help_ctrl_, panel, wxID_ANY);
   reconnect_dialog_ = new ReconnectDialog(help_ctrl_, panel, wxID_ANY);
   about_dialog_ = new AboutDialog(panel, wxID_ANY);
 
@@ -362,20 +370,23 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
 void DiscoverFrame::setBusy()
 {
   discover_button_->Disable();
-  reset_button_->Disable();
+  // reset_button_->Disable();
   force_ip_button_->Disable();
-  // force_perm_ip_button_->Disable();
-  reconnect_button_->Disable();
+  force_ip_button_->SetBackgroundColour(wxColour(240, 240, 240));
+  force_perm_ip_button_->Disable();
+  // reconnect_button_->Disable();
   spinner_ctrl_->Play();
 }
 
 void DiscoverFrame::clearBusy()
 {
   discover_button_->Enable();
-  reset_button_->Enable();
-  force_ip_button_->Enable();
-  // force_perm_ip_button_->Enable();
-  reconnect_button_->Enable();
+  // reset_button_->Enable();
+  //force_ip_button_->Enable();
+  force_ip_button_->Disable();
+  force_ip_button_->SetBackgroundColour(wxColour(240, 240, 240));  
+  force_perm_ip_button_->Enable();
+  // reconnect_button_->Enable();
   spinner_ctrl_->Stop();
 
   // on Windows, wxAnimationCtrl is sometimes not stopping even if
@@ -441,7 +452,7 @@ void DiscoverFrame::updateDeviceList(const std::vector<wxVector<wxVariant>> &d)
 
   reset_dialog_->setDiscoveredSensors(device_list_->GetStore(), show_in_reset_dialog);
   force_ip_dialog_->setDiscoveredSensors(device_list_->GetStore());
-  // force_perm_ip_dialog_->setDiscoveredSensors(device_list_->GetStore());
+  force_perm_ip_dialog_->setDiscoveredSensors(device_list_->GetStore());
   reconnect_dialog_->setDiscoveredSensors(device_list_->GetStore());
 }
 
@@ -461,13 +472,14 @@ void DiscoverFrame::onResetButton(wxCommandEvent &)
 
 void DiscoverFrame::onForceIpButton(wxCommandEvent &)
 {
-  openForceIpDialog(device_list_->GetSelectedRow());
+  // openForceIpDialog(device_list_->GetSelectedRow());
+  openWebGUI(device_list_->GetSelectedRow());
 }
 
-// void DiscoverFrame::onForcePermIpButton(wxCommandEvent &)
-// {
-//   openForcePermIpDialog(device_list_->GetSelectedRow());
-// }
+void DiscoverFrame::onForcePermIpButton(wxCommandEvent &)
+{
+  openForcePermIpDialog(device_list_->GetSelectedRow());
+}
 
 void DiscoverFrame::onReconnectButton(wxCommandEvent &)
 {
@@ -501,8 +513,13 @@ void DiscoverFrame::onDeviceSelection(wxDataViewEvent &event)
   {
     return;
   }
+  // enable set temporary ip button 
+  force_ip_button_->Enable(isMadeByRc(*device_list_, row));
+  force_ip_button_->SetBackgroundColour(wxColour(0, 61, 106));
+  // set font color to white
+  // force_ip_button_->SetForegroundColour(wxColour(255, 255, 255));
 
-  reset_button_->Enable(isRcVisard(*device_list_, row));
+  // reset_button_->Enable(isRcVisard(*device_list_, row));
 }
 
 void DiscoverFrame::onDataViewContextMenu(wxDataViewEvent &event)
@@ -535,9 +552,9 @@ void DiscoverFrame::onDataViewContextMenu(wxDataViewEvent &event)
     }
   }
 
-  menu.Append(ID_ForceIpButton, "Set temporary IP");
+  menu.Append(ID_ForceIpButton, "Open");
   menu.Append(ID_ReconnectButton, "Reconnect");
-  // menu.Append(ID_ForcePermIpButton, "Set permanent IP");
+  menu.Append(ID_ForcePermIpButton, "Set permanent IP");
 
   PopupMenu(&menu);
 }
@@ -615,19 +632,20 @@ void DiscoverFrame::onForceIpContextMenu(wxMenuEvent &)
     return;
   }
 
-  openForceIpDialog(menu_event_item_->first);
+  // openForceIpDialog(menu_event_item_->first);
+  openWebGUI(menu_event_item_->first);
 }
 
-// void DiscoverFrame::onForcePermIpContextMenu(wxMenuEvent &)
-// {
-//   if (!menu_event_item_ ||
-//       menu_event_item_->first < 0)
-//   {
-//     return;
-//   }
+void DiscoverFrame::onForcePermIpContextMenu(wxMenuEvent &)
+{
+  if (!menu_event_item_ ||
+      menu_event_item_->first < 0)
+  {
+    return;
+  }
 
-//   openForcePermIpDialog(menu_event_item_->first);
-// }
+  openForcePermIpDialog(menu_event_item_->first);
+}
 
 void DiscoverFrame::onReconnectContextMenu(wxMenuEvent &)
 {
@@ -695,15 +713,15 @@ void DiscoverFrame::openForceIpDialog(const int row)
   force_ip_dialog_->Show();
 }
 
-// void DiscoverFrame::openForcePermIpDialog(const int row)
-// {
-//   if (row != wxNOT_FOUND)
-//   {
-//     force_perm_ip_dialog_->setActiveSensor(static_cast<unsigned int>(row));
-//   }
+void DiscoverFrame::openForcePermIpDialog(const int row)
+{
+  if (row != wxNOT_FOUND)
+  {
+    force_perm_ip_dialog_->setActiveSensor(static_cast<unsigned int>(row));
+  }
 
-//   force_perm_ip_dialog_->Show();
-// }
+  force_perm_ip_dialog_->Show();
+}
 
 
 void DiscoverFrame::openReconnectDialog(const int row)
@@ -721,8 +739,44 @@ void DiscoverFrame::openWebGUI(int row)
   if (isMadeByRc(*device_list_, row))
   {
     const auto ip_wxstring = device_list_->GetTextValue(
-        static_cast<unsigned int>(row), IP);
-    wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
+        static_cast<unsigned int>(row), IP);  
+    //wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
+    force_ip_dialog_->setActiveSensor(static_cast<unsigned int>(row));
+    std::string ip_sender = force_ip_dialog_->getSenderIpString();
+    // if ip_sender is equal to  ip_wxstring then no need to set IP
+    if(ip_sender == ip_wxstring.ToStdString())
+    {
+      wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
+    }
+    else
+    {
+      // ask if user wants to set IP address to ip_sender
+      int answer = wxMessageBox("Do you want to set temporary IP address to " + ip_sender + " ?", "Set IP address", wxYES_NO | wxICON_QUESTION);
+      if(answer == wxYES)
+      {
+        // set IP address to ip_sender
+        // Create a temporary wxCommandEvent and pass it to the function
+        wxCommandEvent evt;
+        force_ip_dialog_->onForceIpButton(evt);        
+        // Show a message dialog with a loading icon
+        wxMessageBox("Setting temporary IP address to " + ip_sender + ". Please wait...","busy", wxOK | wxICON_INFORMATION);
+        setBusy();
+        // Wait for 5 seconds
+        wxMilliSleep(5000);
+        clearBusy(); 
+        // run discovery again
+        wxCommandEvent evt1;
+        onDiscoverButton(evt1);
+        // open webgui           
+        wxLaunchDefaultBrowser("http://" + ip_sender + "/");
+      }
+      else
+      {
+        // Warn user if IP is in not same subnet then application will not open in browser
+        wxMessageBox("IP address is not in same subnet. Application will not open in browser.", "Warning", wxOK | wxICON_WARNING);
+        // wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
+      }
+    }    
   }
 }
 

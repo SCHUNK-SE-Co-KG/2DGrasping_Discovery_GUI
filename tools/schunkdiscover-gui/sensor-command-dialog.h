@@ -47,6 +47,7 @@ class SensorCommandDialog : public wxDialog
 
     virtual ~SensorCommandDialog() = default;
     std::array<uint8_t, 4> getSenderIp() const;
+    std::string getSenderIpString() const;
   public:
     /**
      * @brief Set list of discovered devices to provide a drop down menu
@@ -70,7 +71,7 @@ class SensorCommandDialog : public wxDialog
     std::array<uint8_t, 6> getMac() const;
     // std::array<uint8_t, 4> getSenderIp() const;
     std::string getMacString() const;
-    std::string getSenderIpString() const;
+    // std::string getSenderIpString() const;
     void displayHelp(const std::string &section);
 
     /**

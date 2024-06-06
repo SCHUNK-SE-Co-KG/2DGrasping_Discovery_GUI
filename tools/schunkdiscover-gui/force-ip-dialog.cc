@@ -375,30 +375,38 @@ void ForceIpDialog::onForceIpButton(wxCommandEvent &)
       x->SetBackgroundColour(wxColour(240, 240, 240));
     }
 
-    std::ostringstream oss;
-    oss << "Are you sure to set the IP address of the device with MAC-address "
-        << mac_string << "?";
-    const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
+    // std::ostringstream oss;
+    // oss << "Are you sure to set the IP address of the device with MAC-address "
+    //     << mac_string << "?";
+    // const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
 
-    if (answer == wxYES)
-    {
-      std::ostringstream oss;
-      oss << "The new IP address is " << ip_sender_string;
-      const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
+    // if (answer == wxYES)
+    // {
+    //   std::ostringstream oss;
+    //   oss << "The new IP address is " << ip_sender_string;
+    //   const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
 
-      if (answer == wxYES)
-      {
+    //   if (answer == wxYES)
+    //   {
 
-        std::uint64_t m = 0;
-        m |= static_cast<std::uint64_t>(mac[0]) << 40;
-        m |= static_cast<std::uint64_t>(mac[1]) << 32;
-        m |= static_cast<std::uint64_t>(mac[2]) << 24;
-        m |= static_cast<std::uint64_t>(mac[3]) << 16;
-        m |= static_cast<std::uint64_t>(mac[4]) << 8;
-        m |= static_cast<std::uint64_t>(mac[5]) << 0;
-        force_ip.sendCommand(m, ip, subnet, gateway);
-      }
-    }
+    //     std::uint64_t m = 0;
+    //     m |= static_cast<std::uint64_t>(mac[0]) << 40;
+    //     m |= static_cast<std::uint64_t>(mac[1]) << 32;
+    //     m |= static_cast<std::uint64_t>(mac[2]) << 24;
+    //     m |= static_cast<std::uint64_t>(mac[3]) << 16;
+    //     m |= static_cast<std::uint64_t>(mac[4]) << 8;
+    //     m |= static_cast<std::uint64_t>(mac[5]) << 0;
+    //     force_ip.sendCommand(m, ip, subnet, gateway);
+    //   }
+    // }
+    std::uint64_t m = 0;
+    m |= static_cast<std::uint64_t>(mac[0]) << 40;
+    m |= static_cast<std::uint64_t>(mac[1]) << 32;
+    m |= static_cast<std::uint64_t>(mac[2]) << 24;
+    m |= static_cast<std::uint64_t>(mac[3]) << 16;
+    m |= static_cast<std::uint64_t>(mac[4]) << 8;
+    m |= static_cast<std::uint64_t>(mac[5]) << 0;
+    force_ip.sendCommand(m, ip, subnet, gateway);
 
     Hide();
   }
