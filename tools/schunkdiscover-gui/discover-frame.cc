@@ -751,7 +751,7 @@ void DiscoverFrame::openWebGUI(int row)
     else
     {
       // ask if user wants to set IP address to ip_sender
-      int answer = wxMessageBox("Do you want to set temporary IP address to " + ip_sender + " ?", "Set IP address", wxYES_NO | wxICON_QUESTION);
+      int answer = wxMessageBox("Do you want to set temporary IP address  ?", "Set IP address", wxYES_NO | wxICON_QUESTION);
       if(answer == wxYES)
       {
         // set IP address to ip_sender
@@ -759,16 +759,30 @@ void DiscoverFrame::openWebGUI(int row)
         wxCommandEvent evt;
         force_ip_dialog_->onForceIpButton(evt);        
         // Show a message dialog with a loading icon
-        wxMessageBox("Setting temporary IP address to " + ip_sender + ". Please wait...","busy", wxOK | wxICON_INFORMATION);
+        wxMessageBox("Setting temporary IP address. Please wait...","busy", wxOK | wxICON_INFORMATION);
         setBusy();
         // Wait for 5 seconds
         wxMilliSleep(5000);
         clearBusy(); 
         // run discovery again
         wxCommandEvent evt1;
-        onDiscoverButton(evt1);
-        // open webgui           
-        wxLaunchDefaultBrowser("http://" + ip_sender + "/");
+        onDiscoverButton(evt1);        
+        // open webgui
+        std::array<uint8_t, 4> ip_sender = force_ip_dialog_->getSenderIp();  
+        // Use a 32-bit integer to store the sender IP address
+        if (ip_sender[3] == 255)
+        {
+          ip_sender[3] = 0;
+        }
+        std::uint32_t ip_sender_uint = 0;
+        ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[0]) << 24;
+        ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[1]) << 16; 
+        ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[2]) << 8;
+        ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[3]);
+        ip_sender_uint += 1;    
+        // covert to string
+        std::string ip_sender_string = std::to_string((ip_sender_uint >> 24) & 0xFF) + "." + std::to_string((ip_sender_uint >> 16) & 0xFF) + "." + std::to_string((ip_sender_uint >> 8) & 0xFF) + "." + std::to_string(ip_sender_uint & 0xFF);
+        wxLaunchDefaultBrowser("http://" + ip_sender_string + "/");
       }
       else
       {

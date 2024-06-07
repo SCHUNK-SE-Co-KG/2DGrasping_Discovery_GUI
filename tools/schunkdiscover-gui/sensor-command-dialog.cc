@@ -26,6 +26,9 @@
 #include <wx/dataview.h>
 #include <wx/html/helpctrl.h>
 #include <wx/cshelp.h>
+#include <cstdint>
+#include <wx/variant.h>
+
 
 SensorCommandDialog::SensorCommandDialog(wxHtmlHelpController *help_ctrl,
                                          wxWindow *parent, wxWindowID id,
@@ -73,13 +76,10 @@ SensorCommandDialog::SensorCommandDialog(wxHtmlHelpController *help_ctrl,
   }
   grid_->Add(mac_box, 1, wxEXPAND);
 
-  //vbox_->Add(grid_, 0, wxALL | wxEXPAND, 15);
-
-  //panel_->SetSizer(vbox_);
-
   // Sender IP
-  auto *senderip_text = new wxStaticText(panel_, wxID_ANY, "New proposed IP address");
+  auto *senderip_text = new wxStaticText(panel_, wxID_ANY, "Host PC IP address");
   grid_->Add(senderip_text);
+  
   auto *senderip_box = new wxBoxSizer(wxHORIZONTAL);
   i = 0;
 
@@ -124,13 +124,13 @@ void SensorCommandDialog::setDiscoveredSensors(
       {
         wxVariant hostname{};
         wxVariant mac{};
-        wxVariant interface{};
+        wxVariant ifaceVariant{};
         wxVariant sender{};
         sensor_list->GetValueByRow(hostname, i, DiscoverFrame::NAME);
         sensor_list->GetValueByRow(mac, i, DiscoverFrame::MAC);
-        sensor_list->GetValueByRow(interface, i, DiscoverFrame::IFACE);
+        sensor_list->GetValueByRow(ifaceVariant, i, DiscoverFrame::IFACE);
         sensor_list ->GetValueByRow(sender, i, DiscoverFrame::SENDERIP);
-        const auto s = wxString::Format("%s(SenderIP: %s)", hostname.GetString(),  sender.GetString());
+        const auto s = wxString::Format("%s(%s: %s)", hostname.GetString(),ifaceVariant.GetString(), sender.GetString());
         sensors_->Append(s);
         row_map_.emplace(i, sensors_row + 1);
         row_map_inv_.emplace(sensors_row + 1, i);
@@ -343,16 +343,17 @@ void SensorCommandDialog::fillSenderIp()
     if (i == 3)
     {
     // Parse each segment of the IP address string, add 1, and set the value
-    int ip_segment = std::stoi(senderip[i]) + 1;
+    int ip_segment = std::stoi(senderip[i]);
     if (ip_segment > 255) ip_segment = 1; // Ensure it doesn't exceed 255
     senderip_[i]->ChangeValue(std::to_string(ip_segment));
-    senderip_[i]->SetEditable(true);
+    senderip_[i]->SetEditable(false);
+    
     }
     else
     {
 
     senderip_[i]->ChangeValue(senderip[i]);
-    senderip_[i]->SetEditable(true);
+    senderip_[i]->SetEditable(false);
     }
   }
 }
