@@ -130,7 +130,7 @@ void SensorCommandDialog::setDiscoveredSensors(
         sensor_list->GetValueByRow(mac, i, DiscoverFrame::MAC);
         sensor_list->GetValueByRow(ifaceVariant, i, DiscoverFrame::IFACE);
         sensor_list ->GetValueByRow(sender, i, DiscoverFrame::SENDERIP);
-        const auto s = wxString::Format("%s(%s: %s)", hostname.GetString(),ifaceVariant.GetString(), sender.GetString());
+        const auto s = wxString::Format("%s(PC INTERFACE: %s)", hostname.GetString(),ifaceVariant.GetString());
         sensors_->Append(s);
         row_map_.emplace(i, sensors_row + 1);
         row_map_inv_.emplace(sensors_row + 1, i);
