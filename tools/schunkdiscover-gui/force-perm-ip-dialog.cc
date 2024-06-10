@@ -268,11 +268,13 @@ void ForcePermIpDialog::onForcePermIpButton(wxCommandEvent &)
     const auto subnet = parseIp(subnet_);
     const auto gateway = parseIp(gateway_);
 
+    schunkdiscover::ForcePermIP force_perm_ip;
+
     if ((ip & subnet) != (gateway & subnet))
     {
       std::ostringstream oss;
       oss << "IP address and gateway appear to be in different subnets. " <<
-             "Are you sure to proceed?";
+             "Can not proceed... Please choose another IP address.";
       const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
       if (answer == wxNO)
       {
@@ -291,16 +293,19 @@ void ForcePermIpDialog::onForcePermIpButton(wxCommandEvent &)
 
     if (ip == ip_sender_uint)
     {
-      const int answer = wxMessageBox(
-            "IP address and sender IP address are the same. Are you sure to "
-            "proceed?", "", wxYES_NO);
-      if (answer == wxNO)
-      {
-        return;
-      }
+      wxMessageBox(
+            "IP address and sender IP address are the same. Can not proceed... Please choose another IP address.", " Invalid IP", wxOK | wxICON_WARNING);
+      // const int answer = wxMessageBox(
+      //       "IP address and sender IP address are the same. Are you sure to "
+      //       "proceed?", "", wxYES_NO);
+      // if (answer == wxNO)
+      // {
+      //   return;
+      // }
+      
     }
-    schunkdiscover::ForcePermIP force_perm_ip;
-
+    if (ip != ip_sender_uint)
+    {
     std::ostringstream oss;
     oss << "Are you sure to set the IP address of the device with MAC-address "
         << mac_string << "?";
@@ -319,6 +324,7 @@ void ForcePermIpDialog::onForcePermIpButton(wxCommandEvent &)
     }
 
     Hide();
+    }
   }
   catch(const std::runtime_error &ex)
   {
