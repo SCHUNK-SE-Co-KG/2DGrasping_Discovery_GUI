@@ -9,9 +9,8 @@
 * Author: Raphael Schaller
 */
 #include "schunkdiscover/force_ip.h"
-
 #include "force-ip-dialog.h"
-
+#include "discover-frame.h"
 #include "event-ids.h"
 
 #include <sstream>
@@ -36,11 +35,7 @@ ForceIpDialog::ForceIpDialog(wxHtmlHelpController *help_ctrl,
   auto *const vbox = getVerticalBox();
   auto *const grid = getGrid();
 
-  auto *ip_text = new wxStaticText(panel, wxID_ANY, "IP address");
-  grid->Add(ip_text);
-  auto *ip_box = new wxBoxSizer(wxHORIZONTAL);
-  addIpToBoxSizer(ip_box, ip_, ID_ForceIp_IpChanged);
-  grid->Add(ip_box);
+ 
 
   auto *subnet_text = new wxStaticText(panel, wxID_ANY, "Subnet mask");
   grid->Add(subnet_text);
@@ -53,6 +48,14 @@ ForceIpDialog::ForceIpDialog(wxHtmlHelpController *help_ctrl,
   auto *gateway_box = new wxBoxSizer(wxHORIZONTAL);
   addIpToBoxSizer(gateway_box, gateway_, ID_ForceIp_GatewayChanged);
   grid->Add(gateway_box);
+ 
+
+  auto *ip_text = new wxStaticText(panel, wxID_ANY, "IP address");
+  grid->Add(ip_text);
+  auto *ip_box = new wxBoxSizer(wxHORIZONTAL);
+  addIpToBoxSizer(ip_box, ip_, ID_ForceIp_IpChanged);
+  grid->Add(ip_box);
+  
 
   auto *button_box = new wxBoxSizer(wxHORIZONTAL);
   auto *set_ip_button = new wxButton(panel, ID_Force_IP,
@@ -83,6 +86,44 @@ ForceIpDialog::ForceIpDialog(wxHtmlHelpController *help_ctrl,
           wxEVT_BUTTON,
           wxCommandEventHandler(ForceIpDialog::onHelpButton));
 
+  
+  // Set default IP values
+  ip_[0]->SetValue("0");
+  ip_[1]->SetValue("0");
+  ip_[2]->SetValue("0");
+  ip_[3]->SetValue("0");
+      
+  // Set default subnet values
+
+  subnet_[0]->SetValue("255");
+  subnet_[1]->SetValue("255");
+  subnet_[2]->SetValue("255");
+  subnet_[3]->SetValue("0");
+
+  // Set gateway values using IP values
+  gateway_[0]->SetValue(ip_[0]->GetValue());  // Assuming GetValue() returns the stored value
+  gateway_[1]->SetValue(ip_[1]->GetValue());  // Assuming GetValue() returns the stored value
+  gateway_[2]->SetValue("0");
+  gateway_[3]->SetValue("0");
+
+  // Set background color of subnet text boxes to gray
+  for (auto &x : subnet_)
+  {
+    x->SetBackgroundColour(wxColour(240, 240, 240));
+  }
+
+  // Set background color of gateway text boxes to gray
+  for (auto &x : gateway_)
+  {
+    x->SetBackgroundColour(wxColour(240, 240, 240));
+  }
+
+  // Set background color of IP address text boxes to gray
+  for (auto &x : ip_)
+  {
+    x->SetBackgroundColour(wxColour(240, 240, 240));
+  }
+
   Centre();
 }
 
@@ -90,15 +131,20 @@ void ForceIpDialog::onClearButton(wxCommandEvent &)
 {
   for (auto &x : ip_)
   {
-    x->ChangeValue("");
-  }
-  for (auto &x : subnet_)
-  {
-    x->ChangeValue("");
+    x->ChangeValue("0");
   }
   for (auto &x : gateway_)
   {
-    x->ChangeValue("");
+    x->ChangeValue("0");
+  }
+  // set subnet 255 except for the last one to 0
+  for (int i = 0; i < 3; ++i)
+  {
+    subnet_[i]->ChangeValue("255");
+    if (i == 3)
+    {
+      subnet_[i]->ChangeValue("0");
+    }
   }
 
   for (auto &x : changed_by_user_)
@@ -122,6 +168,9 @@ void ForceIpDialog::addIpToBoxSizer(wxBoxSizer *sizer,
                        wxSize(45, -1));
     changed_by_user_.emplace(i, false);
     Connect(id, wxEVT_TEXT, wxCommandEventHandler(ForceIpDialog::onIpChanged));
+    // set background color to gray
+    i->SetBackgroundColour(wxColour(240, 240, 240));
+    i->SetEditable(false);
     sizer->Add(i, 1);
     first = false;
   }
@@ -256,43 +305,112 @@ void ForceIpDialog::onForceIpButton(wxCommandEvent &)
 {
   try
   {
+
     std::array<uint8_t, 6> mac = getMac();
     std::string mac_string = getMacString();
-
+    std::array<uint8_t, 4> ip_sender = getSenderIp();
+    std::cout << "Sender IP: " << getSenderIpString() << std::endl;
+    std::string ip_sender_string = getSenderIpString();
+    // Use a 32-bit integer to store the sender IP address
+    if (ip_sender[3] == 255)
+    {
+      ip_sender[3] = 0;
+    }
+    std::uint32_t ip_sender_uint = 0;
+    ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[0]) << 24;
+    ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[1]) << 16;
+    ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[2]) << 8;
+    ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[3]);
+    // Increment the IP address
+    ip_sender_uint += 1;
+    std::uint32_t ip_setter = ip_sender_uint;
+    //Update the ip_ text boxes with the new IP value
+    ip_[0]->SetValue(std::to_string((ip_setter >> 24) & 0xFF));
+    ip_[1]->SetValue(std::to_string((ip_setter >> 16) & 0xFF));
+    ip_[2]->SetValue(std::to_string((ip_setter >> 8) & 0xFF));
+    ip_[3]->SetValue(std::to_string(ip_setter & 0xFF));
     const auto ip = parseIp(ip_);
+    // update gateway values
+    gateway_[0]->SetValue(ip_[0]->GetValue());
+    gateway_[1]->SetValue(ip_[1]->GetValue());
+    gateway_[2]->SetValue("1");
+    gateway_[3]->SetValue("1");
+    
+    // // Use a 32-bit integer to store the IP address
+    // std::uint32_t ip = 0;
+    // ip |= static_cast<std::uint32_t>(ip_sender[0]) << 24;
+    // ip |= static_cast<std::uint32_t>(ip_sender[1]) << 16;
+    // ip |= static_cast<std::uint32_t>(ip_sender[2]) << 8;
+    // ip |= static_cast<std::uint32_t>(ip_sender[3]) << 0;
+    
     const auto subnet = parseIp(subnet_);
     const auto gateway = parseIp(gateway_);
+    
 
-    if ((ip & subnet) != (gateway & subnet))
+    // if ((ip & subnet) != (gateway & subnet))
+    // {
+    //   std::ostringstream oss;
+    //   oss << "IP address and gateway appear to be in different subnets. " <<
+    //          "Are you sure to proceed?";
+    //   const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
+    //   if (answer == wxNO)
+    //   {
+    //     return;
+    //   }
+    // }
+
+    schunkdiscover::ForceIP force_ip; 
+
+    // Set background color of subnet text boxes to gray
+    for (auto &x : subnet_)
     {
-      std::ostringstream oss;
-      oss << "IP address and gateway appear to be in different subnets. " <<
-             "Are you sure to proceed?";
-      const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
-      if (answer == wxNO)
-      {
-        return;
-      }
+      x->SetBackgroundColour(wxColour(240, 240, 240));
     }
 
-    schunkdiscover::ForceIP force_ip;
-
-    std::ostringstream oss;
-    oss << "Are you sure to set the IP address of the device with MAC-address "
-        << mac_string << "?";
-    const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
-
-    if (answer == wxYES)
+    // Set background color of gateway text boxes to gray
+    for (auto &x : gateway_)
     {
-      std::uint64_t m = 0;
-      m |= static_cast<std::uint64_t>(mac[0]) << 40;
-      m |= static_cast<std::uint64_t>(mac[1]) << 32;
-      m |= static_cast<std::uint64_t>(mac[2]) << 24;
-      m |= static_cast<std::uint64_t>(mac[3]) << 16;
-      m |= static_cast<std::uint64_t>(mac[4]) << 8;
-      m |= static_cast<std::uint64_t>(mac[5]) << 0;
-      force_ip.sendCommand(m, ip, subnet, gateway);
+      x->SetBackgroundColour(wxColour(240, 240, 240));
     }
+
+    // Set background color of IP address text boxes to gray
+    for (auto &x : ip_)
+    {
+      x->SetBackgroundColour(wxColour(240, 240, 240));
+    }
+
+    // std::ostringstream oss;
+    // oss << "Are you sure to set the IP address of the device with MAC-address "
+    //     << mac_string << "?";
+    // const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
+
+    // if (answer == wxYES)
+    // {
+    //   std::ostringstream oss;
+    //   oss << "The new IP address is " << ip_sender_string;
+    //   const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
+
+    //   if (answer == wxYES)
+    //   {
+
+    //     std::uint64_t m = 0;
+    //     m |= static_cast<std::uint64_t>(mac[0]) << 40;
+    //     m |= static_cast<std::uint64_t>(mac[1]) << 32;
+    //     m |= static_cast<std::uint64_t>(mac[2]) << 24;
+    //     m |= static_cast<std::uint64_t>(mac[3]) << 16;
+    //     m |= static_cast<std::uint64_t>(mac[4]) << 8;
+    //     m |= static_cast<std::uint64_t>(mac[5]) << 0;
+    //     force_ip.sendCommand(m, ip, subnet, gateway);
+    //   }
+    // }
+    std::uint64_t m = 0;
+    m |= static_cast<std::uint64_t>(mac[0]) << 40;
+    m |= static_cast<std::uint64_t>(mac[1]) << 32;
+    m |= static_cast<std::uint64_t>(mac[2]) << 24;
+    m |= static_cast<std::uint64_t>(mac[3]) << 16;
+    m |= static_cast<std::uint64_t>(mac[4]) << 8;
+    m |= static_cast<std::uint64_t>(mac[5]) << 0;
+    force_ip.sendCommand(m, ip, subnet, gateway);
 
     Hide();
   }

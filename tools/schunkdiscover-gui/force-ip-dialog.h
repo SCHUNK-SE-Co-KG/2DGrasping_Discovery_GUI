@@ -14,6 +14,9 @@
 #include "sensor-command-dialog.h"
 
 #include <map>
+#include <cstdint>
+#include <array>
+#include <wx/wx.h>
 
 /**
  * @brief Dialog for sending FORCEIP_CMD to camera.
@@ -30,11 +33,13 @@ class ForceIpDialog : public SensorCommandDialog
                   const wxString &name = wxDialogNameStr);
 
     virtual ~ForceIpDialog() = default;
+    void onForceIpButton(wxCommandEvent &event);
+    static std::uint32_t parseIp(const std::array<wxTextCtrl *, 4> &ip);
 
   private:
     void addIpToBoxSizer(wxBoxSizer *sizer,
                          std::array<wxTextCtrl *, 4> &ip, int id);
-    static std::uint32_t parseIp(const std::array<wxTextCtrl *, 4> &ip);
+    
 
     void changeTextCtrlIfNotChangedByUser(wxTextCtrl *ctrl,
                                           const std::string &v);
@@ -42,7 +47,7 @@ class ForceIpDialog : public SensorCommandDialog
   private:
     void onClearButton(wxCommandEvent &event);
 
-    void onForceIpButton(wxCommandEvent &event);
+    // void onForceIpButton(wxCommandEvent &event);
     void onHelpButton(wxCommandEvent &event);
 
     void onIpChanged(wxCommandEvent &event);

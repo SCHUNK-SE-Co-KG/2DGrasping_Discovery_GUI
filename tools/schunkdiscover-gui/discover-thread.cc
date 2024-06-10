@@ -129,6 +129,7 @@ wxThread::ExitCode DiscoverThread::Entry()
       data[DiscoverFrame::IFACE] = wxVariant(info.getIfaceName());
       data[DiscoverFrame::REACHABLE] = wxVariant(
               reachable[i].get() ? L"\u2713" : L"\u2717");
+      data[DiscoverFrame::SENDERIP] = wxVariant(ip2string(info.getSenderIP()));
 
       device_list.push_back(std::move(data));
     }

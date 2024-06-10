@@ -27,9 +27,9 @@ ForceIP::ForceIP() :
 }
 
 void ForceIP::sendCommand(const uint64_t mac, const uint32_t ip,
-                          const uint32_t subnet, const uint32_t gateway)
+                          const uint32_t subnet, const uint32_t gateway,bool is_temporary)
 {
-  std::vector<std::uint8_t> force_ip_command(64);
+  std::vector<std::uint8_t> force_ip_command(65);
   force_ip_command[0] = 0x42;
   force_ip_command[1] = 0x00;   // flags
   force_ip_command[2] = 0x00;   // command: FORCEIP_CMD: 0x0004
@@ -58,7 +58,7 @@ void ForceIP::sendCommand(const uint64_t mac, const uint32_t ip,
   force_ip_command[61] = static_cast<std::uint8_t>(gateway >> 16); // gateway
   force_ip_command[62] = static_cast<std::uint8_t>(gateway >> 8);  // gateway
   force_ip_command[63] = static_cast<std::uint8_t>(gateway >> 0);  // gateway
-
+  force_ip_command[64] = is_temporary ? 0x01 : 0x00; // temporary
   for (auto &socket : sockets_)
   {
     std::tie(force_ip_command[6], force_ip_command[7]) =

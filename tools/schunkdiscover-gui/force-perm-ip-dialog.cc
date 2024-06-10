@@ -82,7 +82,12 @@ ForcePermIpDialog::ForcePermIpDialog(wxHtmlHelpController *help_ctrl,
   Connect(ID_Help_Force_Perm_IP,
           wxEVT_BUTTON,
           wxCommandEventHandler(ForcePermIpDialog::onHelpButton));
+  // Set default subnet values
 
+  subnet_[0]->SetValue("255");
+  subnet_[1]->SetValue("255");
+  subnet_[2]->SetValue("255");
+  subnet_[3]->SetValue("0");
   Centre();
 }
 
@@ -275,6 +280,25 @@ void ForcePermIpDialog::onForcePermIpButton(wxCommandEvent &)
       }
     }
 
+    std::array<uint8_t, 4>  ip_sender = getSenderIp();
+
+    std::uint32_t ip_sender_uint = 0;
+    ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[0]) << 24;
+    ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[1]) << 16;
+    ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[2]) << 8;    
+    ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[3]);   
+    
+
+    if (ip == ip_sender_uint)
+    {
+      const int answer = wxMessageBox(
+            "IP address and sender IP address are the same. Are you sure to "
+            "proceed?", "", wxYES_NO);
+      if (answer == wxNO)
+      {
+        return;
+      }
+    }
     schunkdiscover::ForcePermIP force_perm_ip;
 
     std::ostringstream oss;

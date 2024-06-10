@@ -30,11 +30,13 @@ class ForcePermIpDialog : public SensorCommandDialog
                   const wxString &name = wxDialogNameStr);
 
     virtual ~ForcePermIpDialog() = default;
+    void onForcePermIpButton(wxCommandEvent &event);
+    static std::uint32_t parseIp(const std::array<wxTextCtrl *, 4> &ip);
 
   private:
     void addIpToBoxSizer(wxBoxSizer *sizer,
                          std::array<wxTextCtrl *, 4> &ip, int id);
-    static std::uint32_t parseIp(const std::array<wxTextCtrl *, 4> &ip);
+    
 
     void changeTextCtrlIfNotChangedByUser(wxTextCtrl *ctrl,
                                           const std::string &v);
@@ -42,7 +44,7 @@ class ForcePermIpDialog : public SensorCommandDialog
   private:
     void onClearButton(wxCommandEvent &event);
 
-    void onForcePermIpButton(wxCommandEvent &event);
+    // void onForcePermIpButton(wxCommandEvent &event);
     void onHelpButton(wxCommandEvent &event);
 
     void onPermIpChanged(wxCommandEvent &event);
