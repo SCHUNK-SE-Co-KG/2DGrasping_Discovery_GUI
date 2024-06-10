@@ -743,8 +743,25 @@ void DiscoverFrame::openWebGUI(int row)
     //wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
     force_ip_dialog_->setActiveSensor(static_cast<unsigned int>(row));
     std::string ip_sender = force_ip_dialog_->getSenderIpString();
+
+    std::array<uint8_t, 4> ip_sender_ = force_ip_dialog_->getSenderIp();  
+    // Use a 32-bit integer to store the sender IP address
+    if (ip_sender_[3] == 255)
+    {
+      ip_sender_[3] = 0;
+    }
+    std::uint32_t ip_sender_uint = 0;
+    ip_sender_uint |= static_cast<std::uint32_t>(ip_sender_[0]) << 24;
+    ip_sender_uint |= static_cast<std::uint32_t>(ip_sender_[1]) << 16; 
+    ip_sender_uint |= static_cast<std::uint32_t>(ip_sender_[2]) << 8;
+    ip_sender_uint |= static_cast<std::uint32_t>(ip_sender_[3]);
+    ip_sender_uint += 1;    
+    // covert to string
+    std::string ip_sender_string = std::to_string((ip_sender_uint >> 24) & 0xFF) + "." + std::to_string((ip_sender_uint >> 16) & 0xFF) + "." + std::to_string((ip_sender_uint >> 8) & 0xFF) + "." + std::to_string(ip_sender_uint & 0xFF);
+        
     // if ip_sender is equal to  ip_wxstring then no need to set IP
-    if(ip_sender == ip_wxstring.ToStdString())
+    
+    if(ip_sender_string == ip_wxstring.ToStdString())
     {
       wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
     }
