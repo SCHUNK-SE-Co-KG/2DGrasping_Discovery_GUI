@@ -73,6 +73,7 @@
 #include <wx/utils.h>
 #include <wx/wx.h>
 #include <wx/busyinfo.h>
+#include <cstdlib>
 
 static bool isMadeByRc(const wxVector<wxVariant> &device)
 {
@@ -88,12 +89,12 @@ static bool isMadeByRc(const wxDataViewListCtrl &device_list, unsigned int row)
 
 static bool isRcVisard(const wxVector<wxVariant> &device)
 {
-  return device[DiscoverFrame::MODEL].GetString().StartsWith(RC_VISARD);
+  return device[DiscoverFrame::MODEL].GetString().StartsWith(SCHUNK);
 }
 
 static bool isRcVisard(const wxDataViewListCtrl &device_list, unsigned int row)
 {
-  return device_list.GetTextValue(row, DiscoverFrame::MODEL).StartsWith(RC_VISARD);
+  return device_list.GetTextValue(row, DiscoverFrame::MODEL).StartsWith(SCHUNK);
 }
 
 DiscoverFrame::DiscoverFrame(const wxString& title,
@@ -371,8 +372,10 @@ void DiscoverFrame::setBusy()
 {
   discover_button_->Disable();
   // reset_button_->Disable();
-  force_ip_button_->Disable();
+  
   force_ip_button_->SetBackgroundColour(wxColour(240, 240, 240));
+  force_ip_button_->SetForegroundColour(wxColour(128, 128, 128));
+  force_ip_button_->Disable();
   force_perm_ip_button_->Disable();
   // reconnect_button_->Disable();
   spinner_ctrl_->Play();
@@ -382,9 +385,10 @@ void DiscoverFrame::clearBusy()
 {
   discover_button_->Enable();
   // reset_button_->Enable();
-  //force_ip_button_->Enable();
+  //force_ip_button_->Enable();  
+  force_ip_button_->SetBackgroundColour(wxColour(240, 240, 240)); 
+  force_ip_button_->SetForegroundColour(wxColour(128, 128, 128)); 
   force_ip_button_->Disable();
-  force_ip_button_->SetBackgroundColour(wxColour(240, 240, 240));  
   force_perm_ip_button_->Enable();
   // reconnect_button_->Enable();
   spinner_ctrl_->Stop();
@@ -516,6 +520,7 @@ void DiscoverFrame::onDeviceSelection(wxDataViewEvent &event)
   // enable set temporary ip button 
   force_ip_button_->Enable(isMadeByRc(*device_list_, row));
   force_ip_button_->SetBackgroundColour(wxColour(0, 61, 106));
+  force_ip_button_->SetForegroundColour(wxColour(255, 255, 255));
   // set font color to white
   // force_ip_button_->SetForegroundColour(wxColour(255, 255, 255));
 
@@ -746,9 +751,10 @@ void DiscoverFrame::openWebGUI(int row)
 
     std::array<uint8_t, 4> ip_sender_ = force_ip_dialog_->getSenderIp();  
     // Use a 32-bit integer to store the sender IP address
-    if (ip_sender_[3] == 255)
+    if (ip_sender_[3] == 255 || ip_sender_[3] == 0 || ip_sender_[3] == 254) 
+    
     {
-      ip_sender_[3] = 0;
+      ip_sender_[3] = 1;
     }
     std::uint32_t ip_sender_uint = 0;
     ip_sender_uint |= static_cast<std::uint32_t>(ip_sender_[0]) << 24;
@@ -758,10 +764,32 @@ void DiscoverFrame::openWebGUI(int row)
     ip_sender_uint += 1;    
     // covert to string
     std::string ip_sender_string = std::to_string((ip_sender_uint >> 24) & 0xFF) + "." + std::to_string((ip_sender_uint >> 16) & 0xFF) + "." + std::to_string((ip_sender_uint >> 8) & 0xFF) + "." + std::to_string(ip_sender_uint & 0xFF);
-        
-    // if ip_sender is equal to  ip_wxstring then no need to set IP
+
+    // substring before last '.' is equal to ip_wxstring then no need to set IP
+    std::string ip_wxstring_str = ip_wxstring.ToStdString();
+    std::string ip_sender_substr = ip_sender_string.substr(0, ip_sender_string.find_last_of('.'));
+
+    // // ** TO DO ** -- TESTING in WINDOWS
+    // // execute a ping command to check if the IP address is reachable
+    // // if reachable then open webgui
+    // // if not reachable then show a message dialog
+    // std::string command = "ping -c 1 " + ip_wxstring_str;
+    // int result = system(command.c_str());
+    // if (result == 0) {
+    //     // The ping was successful, open the webgui
+    //     // ...
+    //     wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
+    // } else {
+    //     // The ping was not successful, show a message dialog
+    //     wxMessageBox("The IP address " + ip_wxstring_str + " is not reachable.", "Error", wxOK | wxICON_ERROR);
+    // }
     
+    // if ip_sender_string is equal to  ip_wxstring then no need to set IP    
     if(ip_sender_string == ip_wxstring.ToStdString())
+    {
+      wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
+    }
+    else if(ip_sender_substr == ip_wxstring_str.substr(0, ip_wxstring_str.find_last_of('.')))
     {
       wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
     }
@@ -783,13 +811,13 @@ void DiscoverFrame::openWebGUI(int row)
         clearBusy(); 
         // run discovery again
         wxCommandEvent evt1;
-        onDiscoverButton(evt1);        
+        onDiscoverButton(evt1);
         // open webgui
         std::array<uint8_t, 4> ip_sender = force_ip_dialog_->getSenderIp();  
         // Use a 32-bit integer to store the sender IP address
-        if (ip_sender[3] == 255)
+        if (ip_sender[3] == 255 || ip_sender[3] == 0 || ip_sender[3] == 254)
         {
-          ip_sender[3] = 0;
+          ip_sender[3] = 1;
         }
         std::uint32_t ip_sender_uint = 0;
         ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[0]) << 24;

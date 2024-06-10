@@ -312,9 +312,9 @@ void ForceIpDialog::onForceIpButton(wxCommandEvent &)
     std::cout << "Sender IP: " << getSenderIpString() << std::endl;
     std::string ip_sender_string = getSenderIpString();
     // Use a 32-bit integer to store the sender IP address
-    if (ip_sender[3] == 255)
+    if (ip_sender[3] == 255 || ip_sender[3] == 0 || ip_sender[3] == 254)
     {
-      ip_sender[3] = 0;
+      ip_sender[3] = 1;
     }
     std::uint32_t ip_sender_uint = 0;
     ip_sender_uint |= static_cast<std::uint32_t>(ip_sender[0]) << 24;

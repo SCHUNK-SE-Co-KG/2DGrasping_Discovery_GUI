@@ -36,7 +36,7 @@ ForcePermIpDialog::ForcePermIpDialog(wxHtmlHelpController *help_ctrl,
   auto *const vbox = getVerticalBox();
   auto *const grid = getGrid();
 
-  auto *ip_text = new wxStaticText(panel, wxID_ANY, "IP address");
+  auto *ip_text = new wxStaticText(panel, wxID_ANY, "Device IP address");
   grid->Add(ip_text);
   auto *ip_box = new wxBoxSizer(wxHORIZONTAL);
   addIpToBoxSizer(ip_box, ip_, ID_ForcePermIp_IpChanged);
@@ -274,7 +274,7 @@ void ForcePermIpDialog::onForcePermIpButton(wxCommandEvent &)
     {
       std::ostringstream oss;
       oss << "IP address and gateway appear to be in different subnets. " <<
-             "Can not proceed... Please choose another IP address.";
+             "Are you sure to proceed?";
       const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
       if (answer == wxNO)
       {
