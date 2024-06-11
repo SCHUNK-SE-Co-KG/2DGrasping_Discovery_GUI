@@ -557,8 +557,8 @@ void DiscoverFrame::onDataViewContextMenu(wxDataViewEvent &event)
     }
   }
 
-  menu.Append(ID_ForceIpButton, "Open");
-  menu.Append(ID_ReconnectButton, "Reconnect");
+  // menu.Append(ID_ForceIpButton, "Open");
+  // menu.Append(ID_ReconnectButton, "Reconnect");
   menu.Append(ID_ForcePermIpButton, "Set permanent IP");
 
   PopupMenu(&menu);
