@@ -743,16 +743,17 @@ void DiscoverFrame::openWebGUI(int row)
 {
   if (isMadeByRc(*device_list_, row))
   {
+    spinner_ctrl_->Play();
     const auto ip_wxstring = device_list_->GetTextValue(
         static_cast<unsigned int>(row), IP);  
-    //wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
+    const auto reachable_value = device_list_->GetTextValue(
+        static_cast<unsigned int>(row), REACHABLE);  
+    // initialize the force ip dialog with the selected sensor
     force_ip_dialog_->setActiveSensor(static_cast<unsigned int>(row));
-    std::string ip_sender = force_ip_dialog_->getSenderIpString();
-
+    // get the sender IP address
     std::array<uint8_t, 4> ip_sender_ = force_ip_dialog_->getSenderIp();  
     // Use a 32-bit integer to store the sender IP address
-    if (ip_sender_[3] == 255 || ip_sender_[3] == 0 || ip_sender_[3] == 254) 
-    
+    if (ip_sender_[3] == 255 || ip_sender_[3] == 0 || ip_sender_[3] == 254)     
     {
       ip_sender_[3] = 1;
     }
@@ -773,38 +774,53 @@ void DiscoverFrame::openWebGUI(int row)
     // // execute a ping command to check if the IP address is reachable
     // // if reachable then open webgui
     // // if not reachable then show a message dialog
-    // std::string command = "ping -c 1 " + ip_wxstring_str;
-    // int result = system(command.c_str());
-    // if (result == 0) {
-    //     // The ping was successful, open the webgui
-    //     // ...
-    //     wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
-    // } else {
+    
+    //std::string command = "ping -c 1 " + ip_wxstring_str;
+    // wxMessageBox("Checking reachability of device to open application in browser. Please wait..." ,"Busy", wxOK | wxICON_INFORMATION);
+    
+    //int result = system(command.c_str());  
+    // result = 0 if reachable and 1 if not reachable
+     
+    if (reachable_value == wxT("\u2713")) {
+        // The ping was successful, open the webgui
+        // ...
+        
+        wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
+        spinner_ctrl_->Stop();
+
+        // on Windows, wxAnimationCtrl is sometimes not stopping even if
+        // Stop was called. Calling it multiple times reduces the chance
+        // of this happening.
+        spinner_ctrl_->Stop();
+        spinner_ctrl_->Stop();
+    }
+    // else {
     //     // The ping was not successful, show a message dialog
-    //     wxMessageBox("The IP address " + ip_wxstring_str + " is not reachable.", "Error", wxOK | wxICON_ERROR);
+    //     wxMessageBox("The IP address " + ip_wxstring_str + " is not reachable.", "Unable to open ", wxOK | wxICON_ERROR);
     // }
     
-    // if ip_sender_string is equal to  ip_wxstring then no need to set IP    
-    if(ip_sender_string == ip_wxstring.ToStdString())
-    {
-      wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
-    }
-    else if(ip_sender_substr == ip_wxstring_str.substr(0, ip_wxstring_str.find_last_of('.')))
-    {
-      wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
-    }
+    // // if ip_sender_string is equal to  ip_wxstring then no need to set IP    
+    // if(ip_sender_string == ip_wxstring.ToStdString())
+    // {
+    //   wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
+    // }
+    // else if(ip_sender_substr == ip_wxstring_str.substr(0, ip_wxstring_str.find_last_of('.')))
+    // {
+    //   wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
+    // }
     else
     {
       // ask if user wants to set IP address to ip_sender
-      int answer = wxMessageBox("Do you want to set temporary IP address  ?", "Set IP address", wxYES_NO | wxICON_QUESTION);
+      int answer = wxMessageBox("IP address "+ ip_wxstring_str +" is not reachable .Do you want to set temporary IP address  ?", "Set IP address", wxYES_NO | wxICON_QUESTION);
       if(answer == wxYES)
       {
+        spinner_ctrl_->Play();
         // set IP address to ip_sender
         // Create a temporary wxCommandEvent and pass it to the function
         wxCommandEvent evt;
         force_ip_dialog_->onForceIpButton(evt);        
         // Show a message dialog with a loading icon
-        wxMessageBox("Setting temporary IP address. Please wait...","busy", wxOK | wxICON_INFORMATION);
+        wxMessageBox("Setting temporary IP address. Please wait...","Busy", wxOK | wxICON_INFORMATION);
         setBusy();
         // Wait for 5 seconds
         wxMilliSleep(5000);
@@ -827,13 +843,28 @@ void DiscoverFrame::openWebGUI(int row)
         ip_sender_uint += 1;    
         // covert to string
         std::string ip_sender_string = std::to_string((ip_sender_uint >> 24) & 0xFF) + "." + std::to_string((ip_sender_uint >> 16) & 0xFF) + "." + std::to_string((ip_sender_uint >> 8) & 0xFF) + "." + std::to_string(ip_sender_uint & 0xFF);
+        
         wxLaunchDefaultBrowser("http://" + ip_sender_string + "/");
+        spinner_ctrl_->Stop();
+
+        // on Windows, wxAnimationCtrl is sometimes not stopping even if
+        // Stop was called. Calling it multiple times reduces the chance
+        // of this happening.
+        spinner_ctrl_->Stop();
+        spinner_ctrl_->Stop();
       }
       else
       {
+        
         // Warn user if IP is in not same subnet then application will not open in browser
         wxMessageBox("IP address is not in same subnet. Application will not open in browser.", "Warning", wxOK | wxICON_WARNING);
-        // wxLaunchDefaultBrowser("http://" + ip_wxstring + "/");
+        spinner_ctrl_->Stop();
+
+        // on Windows, wxAnimationCtrl is sometimes not stopping even if
+        // Stop was called. Calling it multiple times reduces the chance
+        // of this happening.
+        spinner_ctrl_->Stop();
+        spinner_ctrl_->Stop();
       }
     }    
   }
