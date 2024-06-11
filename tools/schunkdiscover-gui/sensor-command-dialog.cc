@@ -71,6 +71,7 @@ SensorCommandDialog::SensorCommandDialog(wxHtmlHelpController *help_ctrl,
     }
     m = new wxTextCtrl(panel_, wxID_ANY, wxEmptyString,
                        wxDefaultPosition, wxSize(35, -1));
+    m->Disable();
     mac_box->Add(m, 1);
     ++i;
   }
@@ -91,6 +92,7 @@ SensorCommandDialog::SensorCommandDialog(wxHtmlHelpController *help_ctrl,
     }
     s = new wxTextCtrl(panel_, wxID_ANY, wxEmptyString,
                        wxDefaultPosition, wxSize(35, -1));
+    s->Disable();
     senderip_box->Add(s, 1);
     ++i;
   }
@@ -114,7 +116,7 @@ void SensorCommandDialog::setDiscoveredSensors(
   {
     sensors_->Clear();
 
-    sensors_->Append("<Custom>");
+        
 
     const auto rows = sensor_list->GetCount();
     unsigned int sensors_row = 0;
@@ -131,6 +133,7 @@ void SensorCommandDialog::setDiscoveredSensors(
         sensor_list->GetValueByRow(ifaceVariant, i, DiscoverFrame::IFACE);
         sensor_list ->GetValueByRow(sender, i, DiscoverFrame::SENDERIP);
         const auto s = wxString::Format("%s(PC INTERFACE: %s)", hostname.GetString(),ifaceVariant.GetString());
+        sensors_->Append("< Select a device for setting IP >");
         sensors_->Append(s);
         row_map_.emplace(i, sensors_row + 1);
         row_map_inv_.emplace(sensors_row + 1, i);
