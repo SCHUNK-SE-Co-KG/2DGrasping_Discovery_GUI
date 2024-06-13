@@ -87,26 +87,26 @@ if(BUILD_SCHUNKDISCOVER_GUI)
       SET(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> -O coff <DEFINES> -i <SOURCE> -o <OBJECT> <INCLUDES>")
     endif(MINGW)
 
-    add_executable(schunkdiscover-gui
+    add_executable(schunk2DGraspingDiscovery-gui
       ${schunkdiscover-gui-src}
       schunkdiscover-gui/resources/resources.rc)
 
   else (WIN32)
-    add_executable(schunkdiscover-gui ${schunkdiscover-gui-src})
+    add_executable(schunk2DGraspingDiscovery-gui ${schunkdiscover-gui-src})
   endif (WIN32)
 
-  target_include_directories(schunkdiscover-gui
+  target_include_directories(schunk2DGraspingDiscovery-gui
     PRIVATE
       ${wxWidgets_INCLUDE_DIRS}
   )
-  target_link_libraries(schunkdiscover-gui ${PROJECT_NAMESPACE}::schunkdiscover_static ${wxWidgets_LIBRARIES})
+  target_link_libraries(schunk2DGraspingDiscovery-gui ${PROJECT_NAMESPACE}::schunkdiscover_static ${wxWidgets_LIBRARIES})
 
   if (WIN32)
-    target_link_libraries(schunkdiscover-gui iphlpapi.lib ws2_32.lib uxtheme)
-    set_target_properties(schunkdiscover-gui PROPERTIES LINK_FLAGS -mwindows)
+    target_link_libraries(schunk2DGraspingDiscovery-gui iphlpapi.lib ws2_32.lib uxtheme)
+    set_target_properties(schunk2DGraspingDiscovery-gui PROPERTIES LINK_FLAGS -mwindows)
   endif (WIN32)
 
-  install(TARGETS schunkdiscover-gui COMPONENT gui DESTINATION bin)
+  install(TARGETS schunk2DGraspingDiscovery-gui COMPONENT gui DESTINATION bin)
 
   if (UNIX AND NOT APPLE)
     if (NOT CMAKE_INSTALL_DATADIR)
