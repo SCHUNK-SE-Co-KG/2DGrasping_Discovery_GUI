@@ -96,7 +96,7 @@ If you built a Debian package with `make package`, it will automatically ask you
 
 Download the Debian package from Nexus
 --------------------------------------
-CICD pipeline wil upload the Debian package to Nexus and it can be downloaded from <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunkdiscover/discovery.zip">here</a>, upzip the downloaded file .
+CICD pipeline wil upload the Debian package to Nexus and it can be downloaded from <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunk2DGraspingDiscovery/Linux/DEB/schunk2DGraspingDiscovery.zip">here</a>, upzip the downloaded file .
 
 Install the Debian package using 
 ```
