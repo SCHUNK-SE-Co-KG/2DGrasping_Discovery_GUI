@@ -76,31 +76,31 @@ RUN cd build && \
 # Create a zip file containing the Debian packages
 # ================================================
 RUN cd build/_CPack_Packages/Linux/DEB && \
-    zip discovery.zip schunkdiscover*.deb
+    zip schunk2DGraspingDiscovery.zip schunkdiscover*.deb
 
 # Upload zip file to Nexus using curl
 # ================================
 ARG USER
 ARG PW
 ARG REGISTRY_URL=nexus.cloud.schunk.com
-ARG FILE_REPO=tf-raw-bionic-packages/schunkdiscover
+ARG FILE_REPO=tf-raw-bionic-packages/schunk2DGraspingDiscovery/Linux/DEB
 
 RUN cd build/_CPack_Packages/Linux/DEB && \
-    curl -v -u $USER:$PW --upload-file discovery.zip https://$REGISTRY_URL/repository/$FILE_REPO/discovery.zip
+    curl -v -u $USER:$PW --upload-file schunk2DGraspingDiscovery.zip https://$REGISTRY_URL/repository/$FILE_REPO/schunk2DGraspingDiscovery.zip
 
 # Download zip file from Nexus using wget
 # =======================================
 WORKDIR /downloaded
 
-RUN wget --quiet --user=$USER --password=$PW -O discovery.zip https://$REGISTRY_URL/repository/$FILE_REPO/discovery.zip
+RUN wget --quiet --user=$USER --password=$PW -O schunk2DGraspingDiscovery.zip https://$REGISTRY_URL/repository/$FILE_REPO/schunk2DGraspingDiscovery.zip
 
 # Unzip the downloaded file
 # =======================================
-RUN unzip discovery.zip -d /downloaded
+RUN unzip schunk2DGraspingDiscovery.zip -d /downloaded
 
 # Clean up the .deb files and zip file
 # =======================================
-RUN rm /downloaded/schunkdiscover*.deb discovery.zip
+RUN rm /downloaded/schunkdiscover*.deb schunk2DGraspingDiscovery.zip
 
 
 
