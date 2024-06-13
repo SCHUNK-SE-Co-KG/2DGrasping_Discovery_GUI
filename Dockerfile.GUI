@@ -69,8 +69,8 @@ ENV NO_AT_BRIDGE=1
 # Set the entry point or command to execute the application on start
 #==================================================================================================
 WORKDIR /schunkdiscover/build/tools
-RUN chmod +x schunkdiscover-gui
-ENTRYPOINT ["/bin/bash", "-c" ,"./schunkdiscover-gui"] 
+RUN chmod +x schunk2DGraspingDiscovery-gui
+ENTRYPOINT ["/bin/bash", "-c" ,"./schunk2DGraspingDiscovery-gui"] 
 
 # if not required to run the application on start, use the following command
 #==================================================================================================

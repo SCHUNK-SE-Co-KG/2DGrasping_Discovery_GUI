@@ -17,5 +17,5 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
     stdin_open: true
     tty: true
-    command: ["/bin/bash", "-c" ,"./build/tools/schunkdiscover-gui"]
+    command: ["/bin/bash", "-c" ,"./build/tools/schunk2DGraspingDiscovery-gui"]
    
