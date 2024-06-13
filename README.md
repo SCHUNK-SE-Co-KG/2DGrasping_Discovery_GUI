@@ -158,7 +158,7 @@ mingw32-make
 ```
 Finally,rebuild schunkdiscover and executable `schunkdiscover-gui.exe` will be found in `\schunkdiscover\build-mingw32\tools`.
 
-The manually uploaded executable is available  <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunkdiscover/windows/schunkdiscover-gui.exe">here</a> in Nexus repository.
+The manually uploaded executable is available  <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunk2DGraspingDiscovery/Windows/schunk2DGraspingDiscovery-gui.exe">here</a> in Nexus repository.
 
 <!-- **For the 32 bit build you may encounter a 0xc000007b error when running
 schunkdiscover-gui.exe.** This seems to be caused by a bug in WxWidgets build. As
