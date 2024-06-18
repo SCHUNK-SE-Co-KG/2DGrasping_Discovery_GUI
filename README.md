@@ -11,18 +11,17 @@ Discovery of sensors
 
 This package contains tools for the discovery of devices via GigE Vision.
 
-- `schunkdiscover`: console application for discovering devices
-- `schunkdiscover-gui`: graphical application for discovering devices and
+- `schunk2DGraspingDiscovery-gui`: graphical application for discovering devices and
   sending magic packets for resetting of parameters
 
-**Installation:** You can find some prebuilt packages for Linux or Windows on the [releases](https://github.com/roboception/schunkdiscover/releases) page. Alternatively follow the compilation steps in the next sections.
+**Installation:** You can find some prebuilt packages for Linux or Windows on the [Nexus repository](https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunk2DGraspingDiscovery/) . Alternatively follow the compilation steps in the next sections.
 
 Compiling on Linux
 ------------------
 
-For compilation of `schunkdiscover` cmake is required.
+For compilation, cmake is required.
 
-`schunkdiscover-gui` additionally requires [WxWidgets](http://www.wxwidgets.org/).
+`schunk2DGraspingDiscovery-gui` additionally requires [WxWidgets](http://www.wxwidgets.org/).
 
 To install this under Debian/Ubuntu >= 20.04.0:
 ```
@@ -31,7 +30,7 @@ sudo apt-get install cmake libwxgtk3.0-gtk3-dev
 
 In older distributions, the package is called libwxgtk3.0-dev
 
-### Building schunkdiscover
+### Building 
 
 It's required to do an out-of-source build:
 
@@ -96,11 +95,25 @@ If you built a Debian package with `make package`, it will automatically ask you
 
 Download the Debian package from Nexus
 --------------------------------------
-CICD pipeline wil upload the Debian package to Nexus and it can be downloaded from <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunk2DGraspingDiscovery/Linux/DEB/schunk2DGraspingDiscovery.zip">here</a>, upzip the downloaded file .
+
+`schunk2DGraspingDiscovery-gui` additionally requires [WxWidgets](http://www.wxwidgets.org/).
+
+To install this under Debian/Ubuntu >= 20.04.0:
+```
+sudo apt-get install cmake libwxgtk3.0-gtk3-dev
+```
+
+In older distributions, the package is called libwxgtk3.0-dev.
+
+Prebuild  Debian package is available in Nexus and it can be downloaded from <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunk2DGraspingDiscovery/Linux/DEB/schunk2DGraspingDiscovery.zip">here</a>, unzip the downloaded file .
 
 Install the Debian package using 
 ```
 sudo dpkg -i schunkdiscover*.deb
+```
+
+```
+schunk2DGraspingDiscovery-gui
 ```
 
 Compiling on Windows
@@ -145,7 +158,7 @@ cd build\msw
 mingw32-make -f makefile.gcc SHARED=0 BUILD=release -j4 CXXFLAGS="-mtune=generic -mno-abm" CFLAGS="-mtune=generic -mno-abm"
 ```
 
-#### schunkdiscover
+#### Build GUI
 
 Open windows cmd terminal in desired folder and run below commands:
 
@@ -156,7 +169,7 @@ cd build-mingw32
 cmake -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_SCHUNKDISCOVER_GUI=ON -DwxWidgets_ROOT_DIR=<path to WxWidgets root folder> ..
 mingw32-make
 ```
-Finally,rebuild schunkdiscover and executable `schunkdiscover-gui.exe` will be found in `\schunkdiscover\build-mingw32\tools`.
+Finally,rebuild project and executable `schunk2DGraspingDiscovery-gui.exe` will be found in `\schunkdiscover\build-mingw32\tools`.
 
 The manually uploaded executable is available  <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunk2DGraspingDiscovery/Windows/schunk2DGraspingDiscovery-gui.exe">here</a> in Nexus repository.
 
