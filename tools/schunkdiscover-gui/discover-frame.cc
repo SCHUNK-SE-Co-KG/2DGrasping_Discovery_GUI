@@ -822,8 +822,8 @@ void DiscoverFrame::openWebGUI(int row)
         // Show a message dialog with a loading icon
         wxMessageBox("Setting temporary IP address. Please wait...","Busy", wxOK | wxICON_INFORMATION);
         setBusy();
-        // Wait for 5 seconds
-        wxMilliSleep(5000);
+        // Wait for 10 seconds
+        wxMilliSleep(10000);
         clearBusy(); 
         // run discovery again
         wxCommandEvent evt1;

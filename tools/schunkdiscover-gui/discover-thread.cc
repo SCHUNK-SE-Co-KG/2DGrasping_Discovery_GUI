@@ -65,7 +65,7 @@ wxThread::ExitCode DiscoverThread::Entry()
     std::vector<schunkdiscover::DeviceInfo> infos;
 
     while (discover.getResponse(infos, 100) ||
-      std::chrono::duration<double, std::milli>(tend-tstart).count() < 1000)
+      std::chrono::duration<double, std::milli>(tend-tstart).count() < 3000)
     {
       tend=std::chrono::steady_clock::now();
     }

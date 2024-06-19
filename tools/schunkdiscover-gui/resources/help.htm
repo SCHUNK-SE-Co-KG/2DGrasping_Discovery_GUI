@@ -19,77 +19,40 @@
 </p>
 
 <p>
-    After successful discovery, a double click on the device row opens
-    the Web GUI of the device in the default web browser of the
-    operating system.
+    After successful discovery, select the device row and  clicking the <em>Open</em> button will 
+    open the Web GUI of the device in the default web browser of the
+    operating system if it is reachable.
 </p>
 
-<H2><a name="reset" id="reset">Resetting configuration</a></H2>
-
-<p>
-    Only <em>rc_visard</em> devices have custom feature to reset them if misconfigured.
-</p>
-
-<p>
-    A misconfigured <em>rc_visard</em> can be reset by using the <em>Reset rc_visard</em>
-    button in the discovery tool. The reset mechanism is only available for
-    two minutes after device startup. Thus, a reboot of the <em>rc_visard</em>
-    may be required before being able to reset the device.
-</p>
-
-<p>
-    If the misconfigured <em>rc_visard</em> is still successfully detected
-    by the discovery tool, it can be selected from the <em>rc_visard</em>
-    drop down menu. Otherwise, the <em>rc_visard</em>'s MAC address, which
-    is printed on the device label, can be entered manually in the designated
-    fields.
-</p>
-
-<p>After entering the MAC address one of four options can be chosen:</p>
-
-<p>
-    <ul>
-        <li>
-            <em>Reset Parameters</em>: Reset all <em>rc_visard</em>
-            parameters that are configurable via the Web GUI (e.g.,
-            frame rate).
-        </li>
-        <li>
-            <em>Reset Network</em>: Reset network settings and user
-            defined name.
-        </li>
-        <li>
-            <em>Reset All</em>: Reset <em>rc_visard</em> parameters as well
-            as network settings and user defined name.
-        </li>
-        <li>
-            <em>Switch Partitions</em>: Allows to perform a rollback to the
-            previous firmware.
-        </li>
-    <ul>
-</p>
-
-<p>
-    A successful reset is indicated by a white status LED followed by a
-    device reboot. If no reaction is noticeable, the two minutes time slot
-    may have passed, requiring another reboot.
-</p>
 
 <H2><a name="forceip" id="forceip">Assigning a temporary IP address</a></H2>
-
 <p>
     In case a device is not reachable from the computer, it can
-    be assigned a temporary IP address by clicking the <em>Set temporary
-    IP address</em> button. In the popup, the device can then
-    either be selected from the drop down menu or one can enter its MAC address,
-    which is printed on the device label, manually.
+    be assigned a temporary IP address by clicking the <em>Open</em> button. 
+    The device IP will set automatically according to the host PC connected interface IP and will open 
+    the application in default browser.
 </p>
 
 <p>
-    After filling the MAC address, the fields for <em>IP address</em>,
+    Setting a temporary IP is useful for making a device with misconfigured
+    network settings reachable for web browsers and schunk2DGraspingDiscovery-gui 
+    client. The settings are only valid until the device is restarted.
+</p>
+
+<H2><a name="forcepermip" id="forcepermip">Assigning a permanent IP address</a></H2>
+
+<p>
+    In case a device is not reachable from the computer, it can also
+    be assigned a permanent IP address by clicking the <em>Set permanent
+    IP </em> button. In the popup, the device can then
+    either be selected from the drop down menu.
+</p>
+
+<p>
+    The fields for <em>IP address</em>,
     <em>subnet mask</em> and <em>standard gateway</em> need to be completed.
     The subnet mask and the standard gateway are automatically set to default
-    values that can be changed. By clicking <em>Set temporary IP address</em>,
+    values that can be changed. By clicking <em>Set permanent IP</em>,
     these values are applied.
 </p>
 
@@ -100,36 +63,9 @@
 </p>
 
 <p>
-    Setting a temporary IP is useful for making a device with misconfigured
-    network settings reachable for web browsers and standard GigE Vision
-    clients. The settings are only valid until the network is reconnected
-    or the device is restarted. Please use a standard GigE Vision 2.0 client,
-    such as gc_config that is provided in the rc_genicam_api package, to
-    reconfigure the network permanently.
-</p>
-
-<H2><a name="reconnect" id="">Reconnecting a device</a></H2>
-
-<p>
-    With the <em>reconnect</em> functionality of schunkdiscover, a reinitialization
-    of a device's network interface can be triggered. This is
-    comparable with an unplugging and replugging of the network cable.
-    Reconnecting a device is especially useful in two scenarios:
-</p>
-
-<p>
-    First, if a temporary IP address has been assigned to a device
-    by above procedure, reconnecting causes the assignment to be undone;
-    hence, the IP address is reset to the device's
-    previous IP address.
-</p>
-
-<p>
-    Second, after changing the persistent network settings using
-    a standard GigE Vision 2.0 client, such as gc_config in the rc_genicam_api
-    package, a reconnect applies the new settings.
-    This avoids the need for restarting the device or
-    manually replugging its network cable.
+    Setting a permanent IP is useful for setting a device IP address permanently.
+    The newly set IP persistent even after restart.  The default IP settings can be 
+    retreived back only by factory reset of device .
 </p>
 
 </BODY>
