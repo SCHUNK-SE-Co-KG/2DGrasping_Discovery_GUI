@@ -7,6 +7,11 @@
 * All rights reserved
 *
 * Author: Raphael Schaller
+*
+* Copyright (c) 2024 Schunk SE & Co. KG
+* All rights reserved
+* 
+* Author: Divya Sasidharan
 */
 #ifndef SENSORCOMMANDDIALOG_H
 #define SENSORCOMMANDDIALOG_H

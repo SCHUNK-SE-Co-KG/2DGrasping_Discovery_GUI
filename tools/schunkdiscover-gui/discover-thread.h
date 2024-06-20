@@ -1,5 +1,5 @@
 /*
- * schunkdiscover - the network discovery tool for Roboception devices
+ * schunkdiscover - the network discovery tool for Schunk 2D Grasping Kit
  *
  * Copyright (c) 2017 Roboception GmbH
  * All rights reserved

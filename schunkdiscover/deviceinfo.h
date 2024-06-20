@@ -1,10 +1,16 @@
 /*
- * schunkdiscover - the network discovery tool for Roboception devices
+ * schunkdiscover - the network discovery tool for Schunk 2D Grasping Kit
  *
  * Copyright (c) 2017 Roboception GmbH
  * All rights reserved
  *
  * Author: Heiko Hirschmueller
+ * 
+ * Copyright (c) 2024 Schunk SE & Co. KG
+ * All rights reserved
+ * 
+ * Author: Divya Sasidharan
+ *
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:

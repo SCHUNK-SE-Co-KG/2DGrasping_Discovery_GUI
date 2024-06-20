@@ -3,18 +3,20 @@
     <name>schunkdiscover</name>
     <version>1.1.7</version>
     <description>
-        This package contains tools for the discovery of Roboception devices via GigE Vision.
+        This package contains tools for the discovery of Schunk 2D Grasping Kit via GigE Vision.
     </description>
 
-    <maintainer email="felix.ruess@roboception.de">Felix Ruess</maintainer>
+    <maintainer email="divya.sasidharan@de.schunk.com">Divya Sasidharan</maintainer>
 
     <author email="heiko.hirschmueller@roboception.de">Heiko Hirschmueller</author>
     <author email="raphael.schaller@roboception.de">Raphael Schaller</author>
+    <author email="felix.ruess@roboception.de">Felix Ruess</author>
+    <author email="divya.sasidharan@de.schunk.com">Divya Sasidharan</author>
 
     <license>BSD</license>
 
-    <url type="repository">https://github.com/roboception/schunkdiscover</url>
-    <url type="bugtracker">https://github.com/roboception/schunkdiscover/issues</url>
+    <url type="repository">https://github.com/roboception/rcdiscover</url>
+    <url type="bugtracker">https://github.com/roboception/rcdiscover/issues</url>
 
     <buildtool_depend>cmake</buildtool_depend>
 

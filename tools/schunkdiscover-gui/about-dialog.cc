@@ -1,11 +1,16 @@
 /*
- * schunkdiscover - the network discovery tool for Roboception devices
+ * schunkdiscover - the network discovery tool for Schunk 2D Grasping Kit
  *
  * Copyright (c) 2017 Roboception GmbH
  * All rights reserved
  *
  * Author: Raphael Schaller
- *
+ * 
+ * Copyright (c) 2024 Schunk SE & Co. KG
+ * All rights reserved
+ * 
+ * Author: Divya Sasidharan
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -46,6 +51,7 @@
 #define TOSTRING(x) STRINGIFY(x)
 
 static const std::string rc_copyright = "Copyright (c) 2017 Roboception GmbH";
+static const std::string schunk_copyright = "Copyright (c) 2024 Schunk SE & Co. KG";
 static const std::string rc_license = "The source code is available under the 3-clause BSD license.";
 static const std::string wx_license = "This program contains code from the \
 LGPLed library wxWidgets (http://www.wxwidgets.org/).";
@@ -54,14 +60,14 @@ AboutDialog::AboutDialog(wxWindow *parent, wxWindowID id,
                          const wxPoint &pos,
                          long style,
                          const wxString &name) :
-  wxDialog(parent, id, "About SCHUNK Discovery Tool", pos, wxSize(420, 400), style, name)
+  wxDialog(parent, id, "About SCHUNK Discovery Tool", pos, wxSize(450, 420), style, name)
 {
   auto *panel = new wxPanel(this);
   auto *vbox = new wxBoxSizer(wxVERTICAL);
 
   // title
   auto *title_box = new wxBoxSizer(wxHORIZONTAL);
-  auto *title = new wxStaticText(panel, wxID_ANY, "schunkdiscover " PACKAGE_VERSION,
+  auto *title = new wxStaticText(panel, wxID_ANY, "Schunk2DGraspingDiscovery v1.1.7 " ,
                                  wxDefaultPosition,
                                  wxDefaultSize,
                                  wxALIGN_CENTRE);
@@ -73,7 +79,10 @@ AboutDialog::AboutDialog(wxWindow *parent, wxWindowID id,
   // Roboception copyright
   auto *copyright_box = new wxBoxSizer(wxHORIZONTAL);
   auto *copyright = new wxStaticText(panel, wxID_ANY, rc_copyright);
+  auto *copyright_schunk = new wxStaticText(panel, wxID_ANY, schunk_copyright);
   copyright_box->Add(copyright, 1, wxEXPAND | wxALL, 10);
+  // add schunk copyright as well
+  copyright_box->Add(copyright_schunk, 1, wxEXPAND | wxALL, 10);
   vbox->Add(copyright_box, 0, wxALIGN_CENTER);
 
   // Roboception license

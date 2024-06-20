@@ -7,6 +7,11 @@
 * All rights reserved
 *
 * Author: Raphael Schaller
+*
+* Copyright (c) 2024 Schunk SE & Co. KG
+* All rights reserved
+* 
+* Author: Divya Sasidharan
 */
 #ifndef FORCE_PERM_IP_DIALOG_H
 #define FORCE_PERM_IP_DIALOG_H
