@@ -313,7 +313,7 @@ void ForcePermIpDialog::onForcePermIpButton(wxCommandEvent &)
     {
     std::ostringstream oss;
     oss << "Are you sure to set the IP address of the device with MAC-address "
-        << mac_string << "?";
+        << mac_string << "?. Make sure to set the IP address not in the same subnet as the robot port. If so the request will be rejected. Rerun Discovery to get the IP address of the device again.";
     const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
 
     if (answer == wxYES)
