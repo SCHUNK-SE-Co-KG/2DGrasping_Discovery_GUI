@@ -78,12 +78,15 @@ AboutDialog::AboutDialog(wxWindow *parent, wxWindowID id,
 
   // Roboception copyright
   auto *copyright_box = new wxBoxSizer(wxHORIZONTAL);
-  auto *copyright = new wxStaticText(panel, wxID_ANY, rc_copyright);
-  auto *copyright_schunk = new wxStaticText(panel, wxID_ANY, schunk_copyright);
+  auto *copyright = new wxStaticText(panel, wxID_ANY, rc_copyright);  
   copyright_box->Add(copyright, 1, wxEXPAND | wxALL, 10);
-  // add schunk copyright as well
-  copyright_box->Add(copyright_schunk, 1, wxEXPAND | wxALL, 10);
   vbox->Add(copyright_box, 0, wxALIGN_CENTER);
+  // add schunk copyright as well
+  auto *copyright_box_schunk = new wxBoxSizer(wxHORIZONTAL);
+  auto *copyright_schunk = new wxStaticText(panel, wxID_ANY, schunk_copyright);
+  copyright_box_schunk->Add(copyright_schunk, 1, wxEXPAND | wxALL, 10);
+  vbox->Add(copyright_box_schunk, 0, wxALIGN_CENTER);
+  
 
   // Roboception license
   auto *rclicense_box = new wxBoxSizer(wxHORIZONTAL);
