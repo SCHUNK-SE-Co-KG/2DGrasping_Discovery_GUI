@@ -182,6 +182,14 @@ class DeviceInfo
     uint32_t getSenderIP() const { return sender_ip; }
 
     /**
+      Returns the robot_ip_network  address .
+
+      @return 4 bytes with an IPv4 address.
+    */
+
+    uint32_t getRobotIPNetwok() const { return robot_ip_network; }
+
+    /**
      * First compares the MAC address, then the interface name.
      */
 
@@ -213,6 +221,7 @@ class DeviceInfo
     std::string user_name;
     uint32_t dest_sock_addr;
     uint32_t sender_ip;
+    uint32_t robot_ip_network;
 };
 
 }

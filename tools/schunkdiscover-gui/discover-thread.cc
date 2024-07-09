@@ -135,6 +135,7 @@ wxThread::ExitCode DiscoverThread::Entry()
       data[DiscoverFrame::REACHABLE] = wxVariant(
               reachable[i].get() ? L"\u2713" : L"\u2717");
       data[DiscoverFrame::SENDERIP] = wxVariant(ip2string(info.getSenderIP()));
+      data[DiscoverFrame::ROBOTIPNETWORK] = wxVariant(ip2string(info.getRobotIPNetwok()));
 
       device_list.push_back(std::move(data));
     }
