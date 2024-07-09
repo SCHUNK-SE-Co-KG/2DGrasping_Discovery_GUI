@@ -53,7 +53,7 @@ class SensorCommandDialog : public wxDialog
     virtual ~SensorCommandDialog() = default;
     std::array<uint8_t, 4> getSenderIp() const;
     std::string getSenderIpString() const;
-    std::array<uint8_t, 4> getRobotIPNetwok() const;
+    std::array<uint8_t, 4> getRobotIPNetwork() const;
   public:
     /**
      * @brief Set list of discovered devices to provide a drop down menu

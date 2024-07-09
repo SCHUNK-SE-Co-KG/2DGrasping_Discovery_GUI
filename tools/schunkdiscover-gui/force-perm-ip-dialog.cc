@@ -309,10 +309,25 @@ void ForcePermIpDialog::onForcePermIpButton(wxCommandEvent &)
       // }
       
     }
+
+    // check if robot and ip address are in the same subnet
+    std::array<uint8_t, 4>  robotIp_ = getRobotIPNetwork();
+
+    std::uint32_t robotIp_uint = 0;
+    robotIp_uint |= static_cast<std::uint32_t>(robotIp_[0]) << 24;
+    robotIp_uint |= static_cast<std::uint32_t>(robotIp_[1]) << 16;
+    robotIp_uint |= static_cast<std::uint32_t>(robotIp_[2]) << 8;
+    robotIp_uint |= static_cast<std::uint32_t>(robotIp_[3]);
+    if ((ip & subnet) == (robotIp_uint & subnet))
+    {
+      wxMessageBox("Device IP address and robot IP address are in the same subnet. Please choose another IP address.", "Invalid IP", wxOK | wxICON_WARNING);
+      return;
+    }
+
     if (ip != ip_sender_uint)
     {
     std::ostringstream oss;
-    oss << "Ensure device IP address not in the same subnet as the robot port IP to avoid request rejection.\n Are you sure to set the IP address of the device with MAC-address "
+    oss << "Are you sure to set the IP address of the device with MAC-address "
         << mac_string << "?.";
     const int answer = wxMessageBox(oss.str(), "", wxYES_NO);
 

@@ -282,7 +282,7 @@ std::array<uint8_t, 4> SensorCommandDialog::getSenderIp() const
   return senderip;
 }
 
-std::array<uint8_t, 4> SensorCommandDialog::getRobotIPNetwok() const
+std::array<uint8_t, 4> SensorCommandDialog::getRobotIPNetwork() const
 {
   std::array<uint8_t, 4> robotipnetwork;
   for (uint8_t i = 0; i < 4; ++i)

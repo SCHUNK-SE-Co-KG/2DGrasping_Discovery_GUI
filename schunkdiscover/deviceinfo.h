@@ -187,7 +187,7 @@ class DeviceInfo
       @return 4 bytes with an IPv4 address.
     */
 
-    uint32_t getRobotIPNetwok() const { return robot_ip_network; }
+    uint32_t getRobotIPNetwork() const { return robot_ip_network; }
 
     /**
      * First compares the MAC address, then the interface name.
