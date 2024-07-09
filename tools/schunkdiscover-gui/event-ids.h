@@ -91,6 +91,7 @@ enum
   ID_IP_Textbox,
   ID_SenderIP_Textbox,
   ID_Robot_Textbox,
+  ID_Camera_Textbox,
 
   ID_Subnet_Textbox,
   ID_Gateway_Textbox

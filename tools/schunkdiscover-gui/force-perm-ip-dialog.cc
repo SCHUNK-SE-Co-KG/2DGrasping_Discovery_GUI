@@ -266,9 +266,15 @@ void ForcePermIpDialog::onForcePermIpButton(wxCommandEvent &)
 {
   try
   {
+    // subnet is always 255.255.255.0 for camera
+    std::uint32_t subnet_mask = 0;
+    subnet_mask |= 255 << 24;
+    subnet_mask |= 255 << 16;
+    subnet_mask |= 255 << 8;
+    subnet_mask |= 0;
     std::array<uint8_t, 6> mac = getMac();
     std::string mac_string = getMacString();
-
+    
     const auto ip = parseIp(ip_);
     const auto subnet = parseIp(subnet_);
     const auto gateway = parseIp(gateway_);
@@ -318,9 +324,24 @@ void ForcePermIpDialog::onForcePermIpButton(wxCommandEvent &)
     robotIp_uint |= static_cast<std::uint32_t>(robotIp_[1]) << 16;
     robotIp_uint |= static_cast<std::uint32_t>(robotIp_[2]) << 8;
     robotIp_uint |= static_cast<std::uint32_t>(robotIp_[3]);
-    if ((ip & subnet) == (robotIp_uint & subnet))
+    if (((ip & subnet) == (robotIp_uint & subnet_mask)) || ((ip & subnet_mask) == (robotIp_uint & subnet_mask)))
     {
       wxMessageBox("Device IP address and robot IP address are in the same subnet. Please choose another IP address.", "Invalid IP", wxOK | wxICON_WARNING);
+      return;
+    }
+
+    // check if camera and ip address are in the same subnet
+    std::array<uint8_t, 4>  cameraIp_ = getCameraIPNetwork();
+
+    std::uint32_t cameraIp_uint = 0;
+    cameraIp_uint |= static_cast<std::uint32_t>(cameraIp_[0]) << 24;
+    cameraIp_uint |= static_cast<std::uint32_t>(cameraIp_[1]) << 16;
+    cameraIp_uint |= static_cast<std::uint32_t>(cameraIp_[2]) << 8;
+    cameraIp_uint |= static_cast<std::uint32_t>(cameraIp_[3]);
+    
+    if (((ip & subnet) == (cameraIp_uint & subnet_mask)) || ((ip & subnet_mask) == (cameraIp_uint & subnet_mask)))
+    {
+      wxMessageBox("Device IP address and camera IP address are in the same subnet. Please choose another IP address.", "Invalid IP", wxOK | wxICON_WARNING);
       return;
     }
 

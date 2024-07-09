@@ -136,6 +136,12 @@ void DeviceInfo::set(const uint8_t *raw, size_t len)
     robot_ip_network=0;
     for (int i=0; i<4; i++) robot_ip_network=(robot_ip_network<<8)|raw[276+i];
   }
+  if (len >= 296)
+  {
+    camera_ip_network=0;
+    for (int i=0; i<4; i++) camera_ip_network=(camera_ip_network<<8)|raw[292+i];
+  }
+  
 }
 
 
@@ -155,6 +161,7 @@ void DeviceInfo::clear()
   user_name.erase();
   sender_ip=0;
   robot_ip_network=0;
+  camera_ip_network = 0;
 }
 
 }
