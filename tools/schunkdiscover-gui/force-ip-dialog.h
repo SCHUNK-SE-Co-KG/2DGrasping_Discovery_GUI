@@ -61,6 +61,7 @@ class ForceIpDialog : public SensorCommandDialog
     std::array<wxTextCtrl *, 4> ip_;
     std::array<wxTextCtrl *, 4> subnet_;
     std::array<wxTextCtrl *, 4> gateway_;
+    
 
     std::map<const wxTextCtrl *, bool> changed_by_user_;
 

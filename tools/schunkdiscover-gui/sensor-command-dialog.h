@@ -53,6 +53,8 @@ class SensorCommandDialog : public wxDialog
     virtual ~SensorCommandDialog() = default;
     std::array<uint8_t, 4> getSenderIp() const;
     std::string getSenderIpString() const;
+    std::array<uint8_t, 4> getRobotIPNetwork() const;
+    std::array<uint8_t, 4> getCameraIPNetwork() const;
   public:
     /**
      * @brief Set list of discovered devices to provide a drop down menu
@@ -102,6 +104,16 @@ class SensorCommandDialog : public wxDialog
     void fillSenderIp();
 
     /**
+     * @brief Fill robot network address according to selected device.
+     */
+    void fillRobot();
+
+    /**
+     * @brief Fill camera network address according to selected device.
+     */
+    void fillCamera();
+
+    /**
      * @brief Clear MAC address.
      */
     void clearMac();
@@ -120,6 +132,8 @@ class SensorCommandDialog : public wxDialog
     wxChoice *sensors_;
     std::array<wxTextCtrl *, 6> mac_;
     std::array<wxTextCtrl *, 4> senderip_;
+    std::array<wxTextCtrl *, 4> robotipnetwork_;
+    std::array<wxTextCtrl *, 4> cameraipnetwork_;
     std::unordered_map<unsigned int, unsigned int> row_map_;
     std::unordered_map<unsigned int, unsigned int> row_map_inv_;
 

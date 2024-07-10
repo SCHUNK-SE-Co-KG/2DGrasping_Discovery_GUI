@@ -46,13 +46,15 @@ SensorCommandDialog::SensorCommandDialog(wxHtmlHelpController *help_ctrl,
   sensors_(nullptr),
   mac_{{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}},
   senderip_{{nullptr, nullptr, nullptr, nullptr}},
+  robotipnetwork_{{nullptr, nullptr, nullptr, nullptr}},
+  cameraipnetwork_{{nullptr, nullptr, nullptr, nullptr}},
   sensor_list_(nullptr),
   help_ctrl_(help_ctrl)
 {
   panel_ = new wxPanel(this, -1);
   vbox_ = new wxBoxSizer(wxVERTICAL);
 
-  grid_ = new wxFlexGridSizer(3 + additional_grid_rows, 2, 10, 25);
+  grid_ = new wxFlexGridSizer(5 + additional_grid_rows, 2, 10, 25);
   grid_->AddGrowableCol(1, 1);  // Allow the second column to grow
 
   auto *sensors_text = new wxStaticText(panel_, wxID_ANY, "Device");
@@ -102,6 +104,51 @@ SensorCommandDialog::SensorCommandDialog(wxHtmlHelpController *help_ctrl,
     ++i;
   }
   grid_->Add(senderip_box, 1, wxEXPAND);
+
+  //robot IP network
+  
+  // auto *robotipnetwork_text = new wxStaticText(panel_, wxID_ANY, "Robot network");
+  // grid_->Add(robotipnetwork_text);
+  
+  auto *robotipnetwork_box = new wxBoxSizer(wxHORIZONTAL);
+  i = 0;
+
+  for (auto& s : robotipnetwork_)
+  {
+    if (i > 0)
+    {
+      robotipnetwork_box->Add(new wxStaticText(panel_, ID_Robot_Textbox, "."));
+    }
+    s = new wxTextCtrl(panel_, wxID_ANY, wxEmptyString,
+                       wxDefaultPosition, wxSize(35, -1));
+    s->Disable();
+    robotipnetwork_box->Add(s, 1);
+    ++i;
+  }
+  // grid_->Add(robotipnetwork_box, 1, wxEXPAND);
+
+  //camera IP network
+  
+  // auto *cameraipnetwork_text = new wxStaticText(panel_, wxID_ANY, "Camera network");
+  // grid_->Add(cameraipnetwork_text);
+  
+  auto *cameraipnetwork_box = new wxBoxSizer(wxHORIZONTAL);
+  i = 0;
+
+  for (auto& s : cameraipnetwork_)
+  {
+    if (i > 0)
+    {
+      cameraipnetwork_box->Add(new wxStaticText(panel_, ID_Camera_Textbox, "."));
+    }
+    s = new wxTextCtrl(panel_, wxID_ANY, wxEmptyString,
+                       wxDefaultPosition, wxSize(35, -1));
+    s->Disable();
+    cameraipnetwork_box->Add(s, 1);
+    ++i;
+  }
+  // grid_->Add(cameraipnetwork_box, 1, wxEXPAND);
+
   vbox_->Add(grid_, 0, wxALL | wxEXPAND, 15);
   panel_->SetSizer(vbox_);
 
@@ -133,10 +180,14 @@ void SensorCommandDialog::setDiscoveredSensors(
         wxVariant mac{};
         wxVariant ifaceVariant{};
         wxVariant sender{};
+        wxVariant robotipnetwork{};
+        wxVariant cameraipnetwork{};
         sensor_list->GetValueByRow(hostname, i, DiscoverFrame::NAME);
         sensor_list->GetValueByRow(mac, i, DiscoverFrame::MAC);
         sensor_list->GetValueByRow(ifaceVariant, i, DiscoverFrame::IFACE);
         sensor_list ->GetValueByRow(sender, i, DiscoverFrame::SENDERIP);
+        sensor_list ->GetValueByRow(robotipnetwork, i, DiscoverFrame::ROBOTIPNETWORK);
+        sensor_list ->GetValueByRow(cameraipnetwork, i, DiscoverFrame::CAMERAIPNETWORK);
         const auto s = wxString::Format("%s(PC INTERFACE: %s)", hostname.GetString(),ifaceVariant.GetString());
         sensors_->Append("< Select a device for setting IP >");
         sensors_->Append(s);
@@ -160,6 +211,9 @@ void SensorCommandDialog::setActiveSensor(const unsigned int row)
     sensors_->Select(found->second);
     fillMac();
     fillSenderIp();
+    fillRobot();
+    fillCamera();
+
   }
   else
   {
@@ -255,6 +309,60 @@ std::array<uint8_t, 4> SensorCommandDialog::getSenderIp() const
   return senderip;
 }
 
+std::array<uint8_t, 4> SensorCommandDialog::getRobotIPNetwork() const
+{
+  std::array<uint8_t, 4> robotipnetwork;
+  for (uint8_t i = 0; i < 4; ++i)
+  {
+    const auto s = robotipnetwork_[i]->GetValue().ToStdString();
+
+    try
+    {
+      const auto v = std::stoul(s, nullptr, 10);
+      if (v > 255)
+      {
+        throw std::invalid_argument("");
+      }
+      robotipnetwork[i] = static_cast<uint8_t>(v);
+    }
+    catch(const std::invalid_argument&)
+    {
+      throw std::runtime_error(
+            std::string("Each sender ip address segment must contain ") +
+            "a decimal value ranging from 0 to 255.");
+    }
+  }
+  return robotipnetwork;
+}
+
+std::array<uint8_t, 4> SensorCommandDialog::getCameraIPNetwork() const
+{
+  std::array<uint8_t, 4> cameraipnetwork;
+  for (uint8_t i = 0; i < 4; ++i)
+  {
+    const auto s = cameraipnetwork_[i]->GetValue().ToStdString();
+
+    try
+    {
+      const auto v = std::stoul(s, nullptr, 10);
+      if (v > 255)
+      {
+        throw std::invalid_argument("");
+      }
+      cameraipnetwork[i] = static_cast<uint8_t>(v);
+    }
+    catch(const std::invalid_argument&)
+    {
+      throw std::runtime_error(
+            std::string("Each sender ip address segment must contain ") +
+            "a decimal value ranging from 0 to 255.");
+    }
+  }
+  return cameraipnetwork;
+}
+
+
+
 std::string SensorCommandDialog::getSenderIpString() const
 {
   const auto senderip = getSenderIp();
@@ -302,6 +410,8 @@ void SensorCommandDialog::onSensorSelected(wxCommandEvent &)
     {
       fillMac();
       fillSenderIp();
+      fillRobot();
+      fillCamera();
     }
   }
 }
@@ -315,7 +425,7 @@ void SensorCommandDialog::fillMac()
     return;
   }
 
-  wxVariant mac_string{};
+  wxVariant mac_string{};  
   sensor_list_->GetValueByRow(mac_string,
                               row_map_inv_.at(static_cast<unsigned int>(row)),
                               DiscoverFrame::MAC);
@@ -365,6 +475,80 @@ void SensorCommandDialog::fillSenderIp()
     }
   }
 }
+
+void SensorCommandDialog::fillRobot()
+{
+  const int row = sensors_->GetSelection();
+
+  if (row == wxNOT_FOUND)
+  {
+    return;
+  }
+
+  wxVariant robot_string{};
+  sensor_list_->GetValueByRow(robot_string,
+                              row_map_inv_.at(static_cast<unsigned int>(row)),
+                              DiscoverFrame::ROBOTIPNETWORK);
+
+  const auto robot = split<4>(robot_string.GetString().ToStdString(), '.');
+
+  for (uint8_t i = 0; i < 4; ++i)
+  {
+    if (i == 3)
+    {
+    // Parse each segment of the IP address string, add 1, and set the value
+    int ip_segment = std::stoi(robot[i]);
+    if (ip_segment > 255) ip_segment = 1; // Ensure it doesn't exceed 255
+    robotipnetwork_[i]->ChangeValue(std::to_string(ip_segment));
+    robotipnetwork_[i]->SetEditable(false);
+    
+    }
+    else
+    {
+
+    robotipnetwork_[i]->ChangeValue(robot[i]);
+    robotipnetwork_[i]->SetEditable(false);
+    }
+  }
+}
+
+void SensorCommandDialog::fillCamera()
+{
+  const int row = sensors_->GetSelection();
+
+  if (row == wxNOT_FOUND)
+  {
+    return;
+  }
+
+  wxVariant camera_string{};
+  sensor_list_->GetValueByRow(camera_string,
+                              row_map_inv_.at(static_cast<unsigned int>(row)),
+                              DiscoverFrame::CAMERAIPNETWORK);
+
+  const auto camera = split<4>(camera_string.GetString().ToStdString(), '.');
+
+  for (uint8_t i = 0; i < 4; ++i)
+  {
+    if (i == 3)
+    {
+    // Parse each segment of the IP address string, add 1, and set the value
+    int ip_segment = std::stoi(camera[i]);
+    if (ip_segment > 255) ip_segment = 1; // Ensure it doesn't exceed 255
+    cameraipnetwork_[i]->ChangeValue(std::to_string(ip_segment));
+    cameraipnetwork_[i]->SetEditable(false);
+    
+    }
+    else
+    {
+
+    cameraipnetwork_[i]->ChangeValue(camera[i]);
+    cameraipnetwork_[i]->SetEditable(false);
+    }
+  }
+}
+
+
 void SensorCommandDialog::clearMac()
 {
   sensors_->SetSelection(0);

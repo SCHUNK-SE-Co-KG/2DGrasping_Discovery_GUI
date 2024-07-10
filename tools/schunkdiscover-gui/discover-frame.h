@@ -88,8 +88,10 @@ class DiscoverFrame : public wxFrame
       IFACE = 6,
       REACHABLE = 7,
       SENDERIP = 8,
+      ROBOTIPNETWORK = 9,
+      CAMERAIPNETWORK = 10,
 
-      NUM_COLUMNS = 9
+      NUM_COLUMNS = 11
     };
 
   private:
