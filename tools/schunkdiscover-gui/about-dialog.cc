@@ -60,14 +60,14 @@ AboutDialog::AboutDialog(wxWindow *parent, wxWindowID id,
                          const wxPoint &pos,
                          long style,
                          const wxString &name) :
-  wxDialog(parent, id, "About SCHUNK Discovery Tool", pos, wxSize(450, 420), style, name)
+  wxDialog(parent, id, "About SCHUNK 2D Grasping Discovery Tool", pos, wxSize(450, 420), style, name)
 {
   auto *panel = new wxPanel(this);
   auto *vbox = new wxBoxSizer(wxVERTICAL);
 
   // title
   auto *title_box = new wxBoxSizer(wxHORIZONTAL);
-  auto *title = new wxStaticText(panel, wxID_ANY, "Schunk2DGraspingDiscovery v1.1.7 " ,
+  auto *title = new wxStaticText(panel, wxID_ANY, "Schunk 2D Grasping Discovery" ,
                                  wxDefaultPosition,
                                  wxDefaultSize,
                                  wxALIGN_CENTRE);
