@@ -22,14 +22,14 @@ VS_VERSION_INFO VERSIONINFO
     {
         BLOCK "040904E4"
         {
-            VALUE "CompanyName",      "Roboception GmbH"
-            VALUE "FileDescription",  "schunk_discover"
+            VALUE "CompanyName",      "Roboception GmbH, Schunk SE & Co. KG "
+            VALUE "FileDescription",  "schunk2DGraspingDiscovery"
             VALUE "FileVersion",      XSTR(PROJECT_VERSION)
             VALUE "ProductVersion",   XSTR(PROJECT_VERSION)
-            VALUE "InternalName",     "schunk_discover"
-            VALUE "LegalCopyright",   "Copyright (c) 2017, Roboception GmbH"
-            VALUE "OriginalFilename", "schunkdiscover-gui.exe"
-            VALUE "ProductName",      "schunk_discover"
+            VALUE "InternalName",     "schunk2DGraspingDiscovery"
+            VALUE "LegalCopyright",   "Copyright (c) 2017 Roboception GmbH, Copyright (c) 2024 Schunk SE & Co. KG "
+            VALUE "OriginalFilename", "schunk2DGraspingDiscovery-gui.exe"
+            VALUE "ProductName",      "schunk2DGraspingDiscovery"
         }
     }
     BLOCK "VarFileInfo"
