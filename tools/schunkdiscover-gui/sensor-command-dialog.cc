@@ -115,13 +115,14 @@ SensorCommandDialog::SensorCommandDialog(wxHtmlHelpController *help_ctrl,
 
   for (auto& s : robotipnetwork_)
   {
-    if (i > 0)
-    {
-      robotipnetwork_box->Add(new wxStaticText(panel_, ID_Robot_Textbox, "."));
-    }
+    // if (i > 0)
+    // {
+    //   robotipnetwork_box->Add(new wxStaticText(panel_, ID_Robot_Textbox, "."));
+    // }
     s = new wxTextCtrl(panel_, wxID_ANY, wxEmptyString,
                        wxDefaultPosition, wxSize(35, -1));
     s->Disable();
+    s->Show(false);
     robotipnetwork_box->Add(s, 1);
     ++i;
   }
@@ -137,13 +138,14 @@ SensorCommandDialog::SensorCommandDialog(wxHtmlHelpController *help_ctrl,
 
   for (auto& s : cameraipnetwork_)
   {
-    if (i > 0)
-    {
-      cameraipnetwork_box->Add(new wxStaticText(panel_, ID_Camera_Textbox, "."));
-    }
+    // if (i > 0)
+    // {
+    //   cameraipnetwork_box->Add(new wxStaticText(panel_, ID_Camera_Textbox, "."));
+    // }
     s = new wxTextCtrl(panel_, wxID_ANY, wxEmptyString,
                        wxDefaultPosition, wxSize(35, -1));
     s->Disable();
+    s->Show(false);
     cameraipnetwork_box->Add(s, 1);
     ++i;
   }
@@ -151,6 +153,12 @@ SensorCommandDialog::SensorCommandDialog(wxHtmlHelpController *help_ctrl,
 
   vbox_->Add(grid_, 0, wxALL | wxEXPAND, 15);
   panel_->SetSizer(vbox_);
+
+  // After setting the sizer, force a layout recalculation
+  vbox_->Layout();
+  panel_->Layout();
+  this->Fit();
+
 
 
   Connect(ID_Sensor_Combobox,
