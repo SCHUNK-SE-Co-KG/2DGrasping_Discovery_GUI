@@ -75,6 +75,8 @@
 
 #include "resources/logo_128.xpm"
 #include "resources/logo_32_rotate.h"
+#include "resources/loading_spinner_32.h"
+#include "resources/loading_spinner_empty_frame_32.h"
 #include <wx/utils.h>
 #include <wx/wx.h>
 #include <wx/busyinfo.h>
@@ -123,8 +125,12 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
   wxIcon icon_128(logo_128_xpm);
   SetIcon(icon_128);
 
-  wxMemoryInputStream gif_stream(logo_32_rotate_gif,
-                                 sizeof(logo_32_rotate_gif));
+  // wxMemoryInputStream gif_stream(logo_32_rotate_gif,
+  //                                sizeof(logo_32_rotate_gif));
+  // wxMemoryInputStream gif_stream(loading_spinner_32_gif,
+  //                                sizeof(loading_spinner_32_gif));
+  wxMemoryInputStream gif_stream(loading_spinner_empty_frame_32_gif,
+                                 sizeof(loading_spinner_empty_frame_32_gif));
   spinner_.Load(gif_stream, wxANIMATION_TYPE_GIF);
 
   // menu
