@@ -831,7 +831,9 @@ void DiscoverFrame::openWebGUI(int row)
         wxCommandEvent evt;
         force_ip_dialog_->onForceIpButton(evt);        
         // Show a message dialog with a loading icon
-        wxMessageBox("Setting temporary IP address. Please wait...","Busy", wxOK | wxICON_INFORMATION);
+        // wxMessageBox("Setting temporary IP address. Please wait...","Busy", wxOK | wxICON_INFORMATION);
+        wxMessageBox("The temporary IP address is being configured. Please wait and press OK to continue...","Configuration in Progress", wxOK | wxICON_INFORMATION);
+
         setBusy();
         // Wait for 10 seconds
         wxMilliSleep(10000);
