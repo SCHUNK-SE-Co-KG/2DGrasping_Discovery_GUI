@@ -54,6 +54,7 @@
 #include <string>
 #include <iostream> // For std::cerr
 #include <unistd.h> // For getcwd
+#include "wx/stattext.h"
 
 // std::string readHtmlFile(const std::string &filePath)
 // {
@@ -115,6 +116,14 @@ public:
         : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(600, 400))
     {
         wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+        // Create a static text for the title
+        wxStaticText *titleText = new wxStaticText(this, wxID_ANY, "End User License Agreement (EULA)", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+        wxFont titleFont = titleText->GetFont();
+        titleFont.SetWeight(wxFONTWEIGHT_BOLD);
+        titleText->SetFont(titleFont);
+
+        // Center the title
+        sizer->Add(titleText, 0, wxALIGN_CENTER | wxALL, 10);
         wxHtmlWindow *htmlWindow = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(580, 360));
         
         // Set the HTML content directly
@@ -190,7 +199,7 @@ class SchunkDiscoverApp : public wxApp
       std::string htmlContent = readHtmlFileFromResources("memory:eula.htm");
 
       // Display the welcome message dialog with "I agree" and "Decline" buttons
-      HtmlDialog welcomeDialog(nullptr, "End User Licence Agreement", htmlContent);
+      HtmlDialog welcomeDialog(nullptr, "SCHUNK 2D Grasping Discovery", htmlContent);
       if (welcomeDialog.ShowModal() == wxID_CANCEL)
       {
           return false; // Exit the application if the user declines
