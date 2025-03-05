@@ -55,35 +55,58 @@
 #include <iostream> // For std::cerr
 #include <unistd.h> // For getcwd
 
-std::string readHtmlFile(const std::string &filePath)
+// std::string readHtmlFile(const std::string &filePath)
+// {
+//     char cwd[1024];
+//     if (getcwd(cwd, sizeof(cwd)) != nullptr)
+//     {
+//         std::cerr << "Current working directory: " << cwd << std::endl;
+//     }
+//     else
+//     {
+//         std::cerr << "Error: Unable to get current working directory" << std::endl;
+//     }
+
+//     std::cerr << "Attempting to open file: " << filePath << std::endl;
+
+//     std::ifstream file(filePath);
+//     if (!file.is_open())
+//     {
+//         std::cerr << "Error: Unable to open file: " << filePath << std::endl;
+//         std::cerr << "Please check if the file exists and has the correct permissions." << std::endl;
+//         return "Error: Unable to open file: " + filePath;
+//     }
+
+//     std::stringstream buffer;
+//     buffer << file.rdbuf();
+//     std::string content = buffer.str();
+//     std::cerr << "File content: " << content << std::endl; // Debug output
+//     return content;
+// }
+
+std::string readHtmlFileFromResources(const std::string &filePath)
 {
-    char cwd[1024];
-    if (getcwd(cwd, sizeof(cwd)) != nullptr)
-    {
-        std::cerr << "Current working directory: " << cwd << std::endl;
-    }
-    else
-    {
-        std::cerr << "Error: Unable to get current working directory" << std::endl;
-    }
-
-    std::cerr << "Attempting to open file: " << filePath << std::endl;
-
-    std::ifstream file(filePath);
-    if (!file.is_open())
+    std::cerr << "Attempting to open resource: " << filePath << std::endl;
+    wxFileSystem fs;
+    wxFSFile *file = fs.OpenFile(filePath);
+    if (!file)
     {
         std::cerr << "Error: Unable to open file: " << filePath << std::endl;
-        std::cerr << "Please check if the file exists and has the correct permissions." << std::endl;
         return "Error: Unable to open file: " + filePath;
     }
 
+    wxInputStream *stream = file->GetStream();
     std::stringstream buffer;
-    buffer << file.rdbuf();
+    char temp[1024];
+    while (!stream->Eof())
+    {
+        stream->Read(temp, sizeof(temp));
+        buffer.write(temp, stream->LastRead());
+    }
     std::string content = buffer.str();
     std::cerr << "File content: " << content << std::endl; // Debug output
     return content;
 }
-
 
 class HtmlDialog : public wxDialog
 {
@@ -160,8 +183,11 @@ class SchunkDiscoverApp : public wxApp
       SetAppName("schunkdiscover");
       SetVendorName("ROBOCEPTION");
 
-      // Read the content of the HTML file
-      std::string htmlContent = readHtmlFile("1_Eula.html");
+      // // Read the content of the HTML file
+      // std::string htmlContent = readHtmlFile("1_Eula.html");
+      // Read the content of the HTML file from resources
+      registerResources();
+      std::string htmlContent = readHtmlFileFromResources("memory:eula.htm");
 
       // Display the welcome message dialog with "I agree" and "Decline" buttons
       HtmlDialog welcomeDialog(nullptr, "End User Licence Agreement", htmlContent);
@@ -181,7 +207,7 @@ class SchunkDiscoverApp : public wxApp
       }
 #endif
 
-      registerResources();
+      // registerResources();
 
       frame_ = new DiscoverFrame("SCHUNK 2D Grasping Discovery", wxPoint(50,50));
       frame_->Show(true);

@@ -13,6 +13,7 @@
 #include "resources/help.htm.h"
 #include "resources/help.hhc.h"
 #include "resources/help.hhk.h"
+#include "resources/eula.htm.h"
 
 #include <wx/fs_mem.h>
 
@@ -24,4 +25,6 @@ void registerResources()
   wxMemoryFSHandler::AddFile("help.htm", help_htm, sizeof(help_htm));
   wxMemoryFSHandler::AddFile("help.hhc", help_hhc, sizeof(help_hhc));
   wxMemoryFSHandler::AddFile("help.hhk", help_hhk, sizeof(help_hhk));
+  wxMemoryFSHandler::AddFile("eula.htm", eula_htm, sizeof(eula_htm)); // Add this line for eula
+
 }
