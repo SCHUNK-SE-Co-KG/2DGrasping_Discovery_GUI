@@ -46,6 +46,109 @@
 
 #include "wx/app.h"
 #include "wx/msgdlg.h"
+#include "wx/html/htmlwin.h"
+#include "wx/sizer.h"
+#include "wx/button.h" // Include the header for wxButton
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <iostream> // For std::cerr
+#include <unistd.h> // For getcwd
+#include "wx/stattext.h"
+#include "wx/statbmp.h" // Include the header for wxStaticBitmap
+#include "schunkdiscover-gui/resources/logo_128.xpm" // Include the XPM file
+
+std::string readHtmlFileFromResources(const std::string &filePath)
+{
+    std::cerr << "Attempting to open resource: " << filePath << std::endl;
+    wxFileSystem fs;
+    wxFSFile *file = fs.OpenFile(filePath);
+    if (!file)
+    {
+        std::cerr << "Error: Unable to open file: " << filePath << std::endl;
+        return "Error: Unable to open file: " + filePath;
+    }
+
+    wxInputStream *stream = file->GetStream();
+    std::stringstream buffer;
+    char temp[1024];
+    while (!stream->Eof())
+    {
+        stream->Read(temp, sizeof(temp));
+        buffer.write(temp, stream->LastRead());
+    }
+    std::string content = buffer.str();
+    std::cerr << "File content: " << content << std::endl; // Debug output
+    return content;
+}
+
+class HtmlDialog : public wxDialog
+{
+public:
+    HtmlDialog(wxWindow *parent, const wxString &title, const wxString &content)
+        : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(600, 400))
+    {
+        // Set the icon for the dialog
+        wxIcon icon_128(logo_128_xpm);
+        SetIcon(icon_128);
+        wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+        // Create a static text for the title
+        wxStaticText *titleText = new wxStaticText(this, wxID_ANY, "End User License Agreement (EULA)", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+        wxFont titleFont = titleText->GetFont();
+        titleFont.SetWeight(wxFONTWEIGHT_BOLD);
+        titleText->SetFont(titleFont);
+
+        // Center the title
+        sizer->Add(titleText, 0, wxALIGN_CENTER | wxALL, 10);
+        wxHtmlWindow *htmlWindow = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(580, 360));
+        
+        // Set the HTML content directly
+        htmlWindow->SetPage(content);
+        sizer->Add(htmlWindow, 1, wxEXPAND | wxALL, 10);
+
+        wxBoxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+        agreeButton = new wxButton(this, wxID_OK, "I agree");
+        wxButton *declineButton = new wxButton(this, wxID_CANCEL, "Decline");
+        // agreeButton->Disable(); // Initially disable the "I agree" button
+        buttonSizer->Add(agreeButton, 0, wxALL, 5);
+        buttonSizer->Add(declineButton, 0, wxALL, 5);
+
+        sizer->Add(buttonSizer, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 10);
+        SetSizerAndFit(sizer);
+
+        // Bind the scroll event to check if the user has scrolled to the bottom
+        htmlWindow->Bind(wxEVT_SCROLLWIN_THUMBTRACK, &HtmlDialog::OnScroll, this);
+        htmlWindow->Bind(wxEVT_SCROLLWIN_THUMBRELEASE, &HtmlDialog::OnScroll, this);
+        htmlWindow->Bind(wxEVT_SCROLLWIN_LINEUP, &HtmlDialog::OnScroll, this);
+        htmlWindow->Bind(wxEVT_SCROLLWIN_LINEDOWN, &HtmlDialog::OnScroll, this);
+        htmlWindow->Bind(wxEVT_SCROLLWIN_PAGEUP, &HtmlDialog::OnScroll, this);
+        htmlWindow->Bind(wxEVT_SCROLLWIN_PAGEDOWN, &HtmlDialog::OnScroll, this);
+        htmlWindow->Bind(wxEVT_SCROLLWIN_TOP, &HtmlDialog::OnScroll, this);
+        htmlWindow->Bind(wxEVT_SCROLLWIN_BOTTOM, &HtmlDialog::OnScroll, this);
+    }
+
+private:
+    wxButton *agreeButton;
+
+    void OnScroll(wxScrollWinEvent &event)
+    {
+        wxHtmlWindow *htmlWindow = dynamic_cast<wxHtmlWindow*>(event.GetEventObject());
+        if (htmlWindow)
+        {
+            
+            int scrollPos = htmlWindow->GetScrollPos(wxVERTICAL);
+            int clientSize = htmlWindow->GetClientSize().GetHeight();
+            int virtualSize = htmlWindow->GetVirtualSize().GetHeight();
+
+            if (scrollPos + clientSize >= virtualSize)
+            {
+                agreeButton->Enable(); // Enable the "I agree" button if scrolled to the bottom
+            }
+        }
+        event.Skip();
+    }
+};
+
 
 class SchunkDiscoverApp : public wxApp
 {
@@ -66,6 +169,17 @@ class SchunkDiscoverApp : public wxApp
       SetAppName("schunkdiscover");
       SetVendorName("ROBOCEPTION");
 
+      // Read the content of the HTML file from resources
+      registerResources();
+      std::string htmlContent = readHtmlFileFromResources("memory:eula.htm");
+      
+      // Display the welcome message dialog with "I agree" and "Decline" buttons
+      HtmlDialog welcomeDialog(nullptr, "SCHUNK 2D Grasping Discovery", htmlContent);
+      if (welcomeDialog.ShowModal() == wxID_CANCEL)
+      {
+          return false; // Exit the application if the user declines
+      }
+
 #ifdef WIN32
       ::WSADATA wsaData;
       int result;
@@ -77,7 +191,7 @@ class SchunkDiscoverApp : public wxApp
       }
 #endif
 
-      registerResources();
+      // registerResources();
 
       frame_ = new DiscoverFrame("SCHUNK 2D Grasping Discovery", wxPoint(50,50));
       frame_->Show(true);
