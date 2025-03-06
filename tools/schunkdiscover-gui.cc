@@ -107,11 +107,13 @@ public:
         sizer->Add(htmlWindow, 1, wxEXPAND | wxALL, 10);
 
         wxBoxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-        agreeButton = new wxButton(this, wxID_OK, "I agree");
-        wxButton *declineButton = new wxButton(this, wxID_CANCEL, "Decline");
+        wxButton *declineButton = new wxButton(this, wxID_CANCEL, "DECLINE");
+        agreeButton = new wxButton(this, wxID_OK, "I AGREE");
+        
         // agreeButton->Disable(); // Initially disable the "I agree" button
-        buttonSizer->Add(agreeButton, 0, wxALL, 5);
+        
         buttonSizer->Add(declineButton, 0, wxALL, 5);
+        buttonSizer->Add(agreeButton, 0, wxALL, 5);
 
         sizer->Add(buttonSizer, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 10);
         SetSizerAndFit(sizer);
