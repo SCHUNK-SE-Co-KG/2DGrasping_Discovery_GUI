@@ -66,10 +66,7 @@ RUN dbus-uuidgen > /var/lib/dbus/machine-id
 # Set environment variable to disable accessibility bus
 ENV NO_AT_BRIDGE=1
 
-# Copy the Markdown file to the build directory
-#==================================================================================================
-WORKDIR /schunkdiscover
-COPY tools/1_Eula.html /schunkdiscover/build/tools/
+
 
 # Set the entry point or command to execute the application on start
 #==================================================================================================
