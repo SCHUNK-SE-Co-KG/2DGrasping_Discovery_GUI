@@ -58,35 +58,6 @@
 #include "wx/statbmp.h" // Include the header for wxStaticBitmap
 #include "schunkdiscover-gui/resources/logo_128.xpm" // Include the XPM file
 
-// std::string readHtmlFile(const std::string &filePath)
-// {
-//     char cwd[1024];
-//     if (getcwd(cwd, sizeof(cwd)) != nullptr)
-//     {
-//         std::cerr << "Current working directory: " << cwd << std::endl;
-//     }
-//     else
-//     {
-//         std::cerr << "Error: Unable to get current working directory" << std::endl;
-//     }
-
-//     std::cerr << "Attempting to open file: " << filePath << std::endl;
-
-//     std::ifstream file(filePath);
-//     if (!file.is_open())
-//     {
-//         std::cerr << "Error: Unable to open file: " << filePath << std::endl;
-//         std::cerr << "Please check if the file exists and has the correct permissions." << std::endl;
-//         return "Error: Unable to open file: " + filePath;
-//     }
-
-//     std::stringstream buffer;
-//     buffer << file.rdbuf();
-//     std::string content = buffer.str();
-//     std::cerr << "File content: " << content << std::endl; // Debug output
-//     return content;
-// }
-
 std::string readHtmlFileFromResources(const std::string &filePath)
 {
     std::cerr << "Attempting to open resource: " << filePath << std::endl;
@@ -121,11 +92,6 @@ public:
         wxIcon icon_128(logo_128_xpm);
         SetIcon(icon_128);
         wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-        // Create a static bitmap for the logo
-        wxStaticBitmap *logoBitmap = new wxStaticBitmap(this, wxID_ANY, wxIcon(logo_128_xpm));
-
-        // Add the logo to the sizer
-        sizer->Add(logoBitmap, 0, wxALIGN_LEFT | wxALL, 10);
         // Create a static text for the title
         wxStaticText *titleText = new wxStaticText(this, wxID_ANY, "End User License Agreement (EULA)", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
         wxFont titleFont = titleText->GetFont();
@@ -183,95 +149,6 @@ private:
     }
 };
 
-// class HtmlDialog : public wxDialog
-// {
-// public:
-//     HtmlDialog(wxWindow *parent, const wxString &title, const wxString &content)
-//         : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(600, 400))
-//     {
-//         // Set the icon for the dialog
-//         wxIcon icon_128(logo_128_xpm);
-//         SetIcon(icon_128);
-
-//         wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-
-//         // Create a horizontal box sizer for the logo and title
-//         wxBoxSizer *titleSizer = new wxBoxSizer(wxHORIZONTAL);
-
-//         // Create a static bitmap for the logo using wxIcon
-//         wxImage logoImage(logo_128_xpm);
-//         logoImage = logoImage.Scale(64, 64, wxIMAGE_QUALITY_HIGH); // Scale the logo to 64x64
-//         wxStaticBitmap *logoBitmap = new wxStaticBitmap(this, wxID_ANY, wxBitmap(logoImage));
-
-//         // Create a static text for the title
-//         wxStaticText *titleText = new wxStaticText(this, wxID_ANY, "End User License Agreement (EULA)", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
-//         wxFont titleFont = titleText->GetFont();
-//         titleFont.SetWeight(wxFONTWEIGHT_BOLD);
-//         titleText->SetFont(titleFont);
-
-//         // Add the logo to the left side of the horizontal sizer
-//         titleSizer->Add(logoBitmap, 0, wxALIGN_LEFT | wxALL, 10);
-
-//         // Add a spacer to push the title to the center
-//         titleSizer->AddStretchSpacer(1);
-
-//         // Add the title text to the center of the horizontal sizer
-//         titleSizer->Add(titleText, 0, wxALIGN_CENTER | wxALL, 10);
-
-//         // Add a spacer to balance the layout
-//         titleSizer->AddStretchSpacer(1);
-
-//         // Add the horizontal sizer to the main vertical sizer
-//         sizer->Add(titleSizer, 0, wxEXPAND | wxALL, 10);
-
-//         wxHtmlWindow *htmlWindow = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(580, 360));
-        
-//         // Set the HTML content directly
-//         htmlWindow->SetPage(content);
-//         sizer->Add(htmlWindow, 1, wxEXPAND | wxALL, 10);
-
-//         wxBoxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-//         agreeButton = new wxButton(this, wxID_OK, "I agree");
-//         wxButton *declineButton = new wxButton(this, wxID_CANCEL, "Decline");
-//         // agreeButton->Disable(); // Initially disable the "I agree" button
-//         buttonSizer->Add(agreeButton, 0, wxALL, 5);
-//         buttonSizer->Add(declineButton, 0, wxALL, 5);
-
-//         sizer->Add(buttonSizer, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 10);
-//         SetSizerAndFit(sizer);
-
-//         // Bind the scroll event to check if the user has scrolled to the bottom
-//         htmlWindow->Bind(wxEVT_SCROLLWIN_THUMBTRACK, &HtmlDialog::OnScroll, this);
-//         htmlWindow->Bind(wxEVT_SCROLLWIN_THUMBRELEASE, &HtmlDialog::OnScroll, this);
-//         htmlWindow->Bind(wxEVT_SCROLLWIN_LINEUP, &HtmlDialog::OnScroll, this);
-//         htmlWindow->Bind(wxEVT_SCROLLWIN_LINEDOWN, &HtmlDialog::OnScroll, this);
-//         htmlWindow->Bind(wxEVT_SCROLLWIN_PAGEUP, &HtmlDialog::OnScroll, this);
-//         htmlWindow->Bind(wxEVT_SCROLLWIN_PAGEDOWN, &HtmlDialog::OnScroll, this);
-//         htmlWindow->Bind(wxEVT_SCROLLWIN_TOP, &HtmlDialog::OnScroll, this);
-//         htmlWindow->Bind(wxEVT_SCROLLWIN_BOTTOM, &HtmlDialog::OnScroll, this);
-//     }
-
-// private:
-//     wxButton *agreeButton;
-
-//     void OnScroll(wxScrollWinEvent &event)
-//     {
-//         wxHtmlWindow *htmlWindow = dynamic_cast<wxHtmlWindow*>(event.GetEventObject());
-//         if (htmlWindow)
-//         {
-//             int scrollPos = htmlWindow->GetScrollPos(wxVERTICAL);
-//             int clientSize = htmlWindow->GetClientSize().GetHeight();
-//             int virtualSize = htmlWindow->GetVirtualSize().GetHeight();
-
-//             if (scrollPos + clientSize >= virtualSize)
-//             {
-//                 agreeButton->Enable(); // Enable the "I agree" button if scrolled to the bottom
-//             }
-//         }
-//         event.Skip();
-//     }
-// };
-
 
 class SchunkDiscoverApp : public wxApp
 {
@@ -292,8 +169,6 @@ class SchunkDiscoverApp : public wxApp
       SetAppName("schunkdiscover");
       SetVendorName("ROBOCEPTION");
 
-      // // Read the content of the HTML file
-      // std::string htmlContent = readHtmlFile("1_Eula.html");
       // Read the content of the HTML file from resources
       registerResources();
       std::string htmlContent = readHtmlFileFromResources("memory:eula.htm");

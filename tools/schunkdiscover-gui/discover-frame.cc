@@ -216,7 +216,7 @@ DiscoverFrame::DiscoverFrame(const wxString& title,
                                    wxDATAVIEW_COL_RESIZABLE | wxDATAVIEW_COL_SORTABLE);
     device_list_->AppendTextColumn("Serial Number",
                                    wxDATAVIEW_CELL_INERT,
-                                   130, wxALIGN_CENTER,
+                                   130, wxALIGN_LEFT,
                                    wxDATAVIEW_COL_RESIZABLE | wxDATAVIEW_COL_SORTABLE);
     device_list_->AppendTextColumn("IP Address",
                                    wxDATAVIEW_CELL_INERT,
