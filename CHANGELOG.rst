@@ -1,5 +1,5 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package schunkdiscover
+Changelog for package
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1.1.7 (2024-03-12)
