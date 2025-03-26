@@ -4,7 +4,6 @@ Changes:
 - Updated company labels and icons to reflect SCHUNK.
 - Clicking on a device now opens the Smart Grasping frontend instead of the default Roboception frontend.
 
-Below is the original readme:
 
 Discovery of sensors
 ================================
