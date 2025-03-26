@@ -14,7 +14,7 @@ This package contains tools for the discovery of devices via GigE Vision.
 - `schunk2DGraspingDiscovery-gui`: graphical application for discovering devices and
   sending magic packets for resetting of parameters
 
-**Installation:** You can find some prebuilt packages for Linux or Windows on the [Nexus repository](https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunk2DGraspingDiscovery/) . Alternatively follow the compilation steps in the next sections.
+**Installation:** Follow the compilation steps in the next sections.
 
 Compiling on Linux
 ------------------
@@ -93,28 +93,6 @@ See `debian/50-schunkdiscover-rpfilter.conf` for an example.
 
 If you built a Debian package with `make package`, it will automatically ask you if you want to disable reverse path filtering at package installation.
 
-Download the Debian package from Nexus
---------------------------------------
-
-`schunk2DGraspingDiscovery-gui` additionally requires [WxWidgets](http://www.wxwidgets.org/).
-
-To install this under Debian/Ubuntu >= 20.04.0:
-```
-sudo apt-get install cmake libwxgtk3.0-gtk3-dev
-```
-
-In older distributions, the package is called libwxgtk3.0-dev.
-
-Prebuild  Debian package is available in Nexus and it can be downloaded from <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunk2DGraspingDiscovery/Linux/DEB/schunk2DGraspingDiscovery.zip">here</a>, unzip the downloaded file .
-
-Install the Debian package using 
-```
-sudo dpkg -i schunkdiscover*.deb
-```
-
-```
-schunk2DGraspingDiscovery-gui
-```
 
 Compiling on Windows
 --------------------
@@ -171,7 +149,6 @@ mingw32-make
 ```
 Finally,rebuild project and executable `schunk2DGraspingDiscovery-gui.exe` will be found in `\schunkdiscover\build-mingw32\tools`.
 
-The manually uploaded executable is available  <a href="https://nexus.cloud.schunk.com/repository/tf-raw-bionic-packages/schunk2DGraspingDiscovery/Windows/schunk2DGraspingDiscovery-gui.exe">here</a> in Nexus repository.
 
 <!-- **For the 32 bit build you may encounter a 0xc000007b error when running
 schunkdiscover-gui.exe.** This seems to be caused by a bug in WxWidgets build. As
