@@ -1,4 +1,4 @@
-<b>This is a fork of <a href="https://github.com/roboception/rcdiscover">rcdiscover</a> at commit ec316a8a32ae8bdf38ac2c1af7c7693ea5a0fadd.</b>
+<b>This is a fork of <a href="https://github.com/roboception/rcdiscover">rcdiscover</a> at commit [ec316a8a32ae8bdf38ac2c1af7c7693ea5a0fadd](https://github.com/SCHUNK-SE-Co-KG/2DGrasping_Discovery_GUI/commit/ec316a8a32ae8bdf38ac2c1af7c7693ea5a0fadd).</b>
 
 Changes:
 - Updated company labels and icons to reflect SCHUNK.
